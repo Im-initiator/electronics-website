@@ -1,0 +1,99 @@
+.headerContainer {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    padding: 8px 32px;
+    z-index: 999;
+    background-color: rgba(255, 255, 255, 0.8);
+    --twBackdropBlur: blur(12px);
+    backdrop-filter: var(--twBackdropBlur) var(--twBackdropBrightness) var(--twBackdropContrast) var(--twBackdropGrayscale) var(--twBackdropHueRotate) var(--twBackdropInvert) var(--twBackdropOpacity) var(--twBackdropSaturate) var(--twBackdropSepia);
+}
+
+.headerWrap {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navWrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    z-index: 9999;
+    padding: 32px;
+    font-size: 24px;
+    font-weight: 600;
+    transition: transform 1s ease-in-out;
+}
+
+.navMobileUp {
+    transform: translateY(-100%);
+}
+
+.navMobileDown {
+    transform: translateY(0);
+}
+
+.navIconWrap {
+    display: flex;
+}
+
+.navItem {
+    width: fit-content;
+    padding: 8px 0;
+}
+
+.navItem:not(:last-child),
+.navItemSvg:not(:last-child) {
+    margin-right: 24px;
+}
+  
+.navItemSvg {
+    font-size: 26px;
+    padding: 8px 0;
+    cursor: pointer;
+}
+  
+.menuClose {
+    align-self: end;
+}
+  
+@media screen and (min-width: 640px) {
+    .headerWrap {
+        justify-content: center;
+    }
+  
+    .menuToggle,
+    .menuClose {
+        display: none;
+    }
+  
+    .navWrap {
+        position: relative;
+        flex-direction: row;
+        margin-right: 16px;
+        padding: 0;
+        background-color: transparent;
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    .navMobileUp {
+        transform: translateY(0);
+    }
+  
+    .navItem:not(:last-child),
+    .navItemSvg:not(:last-child) {
+        margin-right: 16px;
+    }
+  
+    .navItemSvg {
+        font-size: 20px;
+    }
+}
+  
