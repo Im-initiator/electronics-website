@@ -6,8 +6,8 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { ImCross } from "react-icons/im";
 import Link from "next/link";
-import Image from "next/image";
 import styles from "@/styles/Header.module.css";
+import { NavigateImage } from "./NavigateImage";
 
 export const Header: FC = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -15,9 +15,7 @@ export const Header: FC = () => {
     return (
         <header className={styles.headerContainer}>
             <nav className={styles.headerWrap}>
-                <Link href="/" className={styles.navItem}>
-                    <Image src="/logo.png" alt="Apple Logo" height={20} width={20}/>
-                </Link>
+                <NavigateImage href="/" className={styles.navItem} src="/logo.png" alt="Apple Logo" height={20} width={20}/>
                 <div className={`${styles.navWrap} ${mobileMenuOpen ? styles.navMobileDown : styles.navMobileUp}`}>
                     <ImCross className={styles.menuClose} onClick={() => setMobileMenuOpen(false)}/>
                     <Link href="/" className={styles.navItem}>Cửa hàng</Link>
