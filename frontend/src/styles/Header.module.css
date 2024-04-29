@@ -4,9 +4,10 @@
     width: 100vw;
     padding: 8px 32px;
     z-index: 999;
-    background-color: rgba(246, 248, 237, 0.8);
-    --twBackdropBlur: blur(12px);
-    backdrop-filter: var(--twBackdropBlur) var(--twBackdropBrightness) var(--twBackdropContrast) var(--twBackdropGrayscale) var(--twBackdropHueRotate) var(--twBackdropInvert) var(--twBackdropOpacity) var(--twBackdropSaturate) var(--twBackdropSepia);
+
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(7.3px);
+    -webkit-backdrop-filter: blur(7.3px);
 }
 
 .headerWrap {
@@ -20,8 +21,8 @@
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     background-color: white;
@@ -33,7 +34,7 @@
 }
 
 .navMobileUp {
-    transform: translateY(-100%);
+    transform: translateY(-100vh);
 }
 
 .navMobileDown {
@@ -77,6 +78,8 @@
     .navWrap {
         position: relative;
         flex-direction: row;
+        width: 100%;
+        height: 100%;
         margin-right: 16px;
         padding: 0;
         background-color: transparent;

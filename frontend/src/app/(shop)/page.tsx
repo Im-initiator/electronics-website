@@ -1,5 +1,8 @@
 import Link from "next/link";
 import styles from "@/styles/Home.module.css";
+import { Section } from "@/components/Section";
+import { Slider } from "@/components/Slider";
+import NewestProducts from "@/mock/home.json";
 
 export default function Home() {
     return (
@@ -24,6 +27,12 @@ export default function Home() {
                     </div>
                 </div>
             </div>
+            <Section title="Sản phẩm nổi bật">
+                <Slider data={NewestProducts}/>
+            </Section>
+            <Section title="Quyền lợi khách hàng" subtitle="Thêm nhiều lý do để mua sắm cùng chúng tôi.">
+
+            </Section>
         </>
     );
 }

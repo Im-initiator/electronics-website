@@ -5,7 +5,9 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     return (
         <>
             <Header/>
-            {children}
+            <main style={{ overflowX: "hidden" }}>
+                {children}
+            </main>
         </>
     );
 }

@@ -1,0 +1,37 @@
+.sectionContainer {
+    margin: 64px auto;
+    width: calc(100% - 32px);
+    max-width: 1100px;
+}
+
+.sectionTitle {
+    font-size: 28px;
+    text-align: center;
+    text-transform: capitalize;
+    margin-bottom: 8px;
+}
+
+.sectionSubTitle {
+    font-size: 14px;
+    text-align: center;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 16px;
+}
+
+.sectionContent {
+    background-color: #fff;
+    padding: 16px;
+    border-radius: 12px;
+    filter: drop-shadow(-8px 11px 14px rgba(0, 0, 0, .5));
+}
+
+@media screen and (min-width: 640px) {
+    .sectionTitle {
+        font-size: 36px;
+    }
+    
+    .sectionSubTitle {
+        font-size: 24px;
+    }
+}

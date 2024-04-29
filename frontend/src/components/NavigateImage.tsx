@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 interface NavigateImageProps {
-    className: string,
+    className?: string,
     href: string,
     src: string,
     alt: string

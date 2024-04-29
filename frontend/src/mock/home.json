@@ -1,0 +1,27 @@
+{
+    "Mac": [
+        "/advertise/mac/1.jpeg",
+        "/advertise/mac/2.jpeg",
+        "/advertise/mac/3.jpeg"
+    ],
+    "iPad": [
+        "/advertise/ipad/1.jpeg",
+        "/advertise/ipad/2.jpeg",
+        "/advertise/ipad/3.jpeg"
+    ],
+    "iPhone": [
+        "/advertise/iphone/1.jpeg",
+        "/advertise/iphone/2.jpg",
+        "/advertise/iphone/3.jpeg"
+    ],
+    "Vision": [
+        "/advertise/vision/1.jpeg",
+        "/advertise/vision/2.jpeg",
+        "/advertise/vision/3.jpeg"
+    ],
+    "AirPods": [
+        "/advertise/airpods/1.jpeg",
+        "/advertise/airpods/2.jpeg",
+        "/advertise/airpods/3.jpeg"
+    ]
+}
