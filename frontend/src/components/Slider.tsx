@@ -1,7 +1,7 @@
 "use client";
 
 import { Dict } from "@/interface/Dict";
-import { FC, useMemo, useReducer } from "react";
+import { FC, useMemo, useReducer, useEffect } from "react";
 import styles from "@/styles/Slider.module.css";
 import { NavigateImage } from "./NavigateImage";
 
@@ -29,6 +29,12 @@ export const Slider: FC<SliderProps> = ({ data }) => {
     }
 
     const [currentTab, setCurrentTab] = useReducer(sliderReducer, 0);
+
+    useEffect(() => {
+        const changeImage = setTimeout(() => setCurrentTab({ type: "INCREMENT" }), 3000);
+
+        return () => clearTimeout(changeImage);
+    }, [currentTab]);
 
     return (
         <div className={styles.SliderContainer}>
