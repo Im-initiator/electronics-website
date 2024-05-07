@@ -1,12 +1,13 @@
 server:
   port: 8080
-
+  tomcat:
+    uri-encoding: UTF-8
 spring:
   application:
     name: backend
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/electronics_project
+    url: jdbc:mysql://localhost:3306/electronics_project #jdbc:mysql://mysql-container:3306/electronics_project
     username: root
     password: 123456
   jpa:
@@ -17,7 +18,16 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
+
+application:
+  security:
+    jwt:
+      secret-key: e61ff531bcdb5c96be3df4b390233264e35d1453b1ced0b162a70de2173e712e
+      expired: 86400000
+      refresh-token:
+        expired: 604800000
+
 
 
 

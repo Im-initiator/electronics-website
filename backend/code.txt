@@ -1,0 +1,17 @@
+100: OK
+
+101: Cần đăng nhập để có quyền truy cập
+103: Lỗi không có quyền truy cập vào tài nguyên
+104: Lỗi không tìm thấy tài nguyên yêu cầu
+
+
+111: token hết hạn
+112: token bị thu hồi
+
+
+200: Tài khoản không chính xác
+201: Tài khoản bị khóa
+
+300: Lỗi nhập sai dữ liệu từ người dùng
+
+400: Lỗi đến từ server do không thể lưu một trường vào csdl
