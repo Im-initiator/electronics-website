@@ -1,14 +1,18 @@
 package com.electronics_store.service;
 
-import com.electronics_store.model.dto.request.AccountDTO;
-import com.electronics_store.model.entity.AccountEntity;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.ResponseEntity;
-
 import java.util.Optional;
 
+import com.electronics_store.model.dto.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.springframework.http.ResponseEntity;
+
+import com.electronics_store.model.dto.request.account.CreateAccountByUserDTO;
+
 public interface AccountService {
-    Optional<AccountDTO> findByUserName(String userName);
-    ResponseEntity<?> createAccountByUser(AccountDTO accountDTO);
-    ResponseEntity<?> login(AccountDTO accountDTO, HttpServletRequest request);
+    Optional<CreateAccountByUserDTO> findByUserName(String userName);
+
+    ApiResponse<?> createAccountByUser(CreateAccountByUserDTO createAccountByUserDTO);
+
+    ApiResponse<?> login(CreateAccountByUserDTO createAccountByUserDTO, HttpServletRequest request);
 }

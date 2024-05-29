@@ -7,7 +7,7 @@ spring:
     name: backend
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql-container:3306/electronics_project #jdbc:mysql://localhost:3306/electronics_project
+    url: jdbc:mysql://localhost:3306/electronics_project #jdbc:mysql://mysql-container:3306/electronics_project
     username: root
     password: 123456
   jpa:

@@ -5,9 +5,10 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class CustomRuntimeException extends RuntimeException{
+public class CustomRuntimeException extends RuntimeException {
     private ErrorSystem errorSystem;
-    public CustomRuntimeException(){
+
+    public CustomRuntimeException() {
         super("Default message");
     }
 }

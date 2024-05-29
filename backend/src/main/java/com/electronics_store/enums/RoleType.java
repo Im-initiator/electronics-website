@@ -1,7 +1,7 @@
 package com.electronics_store.enums;
 
-public enum RoleEnum {
+public enum RoleType {
     USER,
-    MANAGER,
+    EMPLOYEE,
     ADMIN
 }

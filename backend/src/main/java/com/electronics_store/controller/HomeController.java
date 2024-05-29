@@ -10,11 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
 
     @GetMapping
-    public ResponseEntity<?> home(){
+    public ResponseEntity<?> home() {
         return ResponseEntity.ok("OK");
     }
-
-
-
-
 }

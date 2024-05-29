@@ -1,14 +1,14 @@
 package com.electronics_store.service;
 
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.ResponseEntity;
-
 import java.util.Map;
-import java.util.Objects;
+
+import com.electronics_store.model.dto.ApiResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface TokenService {
     boolean isTokenExist(String token);
+
     boolean isRefreshTokenExist(String refreshToken);
 
-    ResponseEntity<?> getTokenByRefreshToken(Map<String, Object> data);
+    ApiResponse<?> getTokenByRefreshToken(Map<String, Object> data);
 }

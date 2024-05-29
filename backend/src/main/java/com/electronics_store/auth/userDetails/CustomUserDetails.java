@@ -1,27 +1,29 @@
 package com.electronics_store.auth.userDetails;
 
-import com.electronics_store.model.entity.AccountEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
+import com.electronics_store.model.entity.AccountEntity;
 
-
+import lombok.Getter;
 
 @Getter
 public class CustomUserDetails implements UserDetails {
     AccountEntity accountEntity;
 
-    public CustomUserDetails(AccountEntity account){
+    public CustomUserDetails(AccountEntity account) {
         this.accountEntity = account;
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return accountEntity.getRoles().stream().map(role-> new SimpleGrantedAuthority(role.getCode())).collect(Collectors.toList());
+        return accountEntity.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getCode()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -54,12 +56,11 @@ public class CustomUserDetails implements UserDetails {
         return accountEntity.isStatus();
     }
 
-    public Long getId(){
+    public Long getId() {
         return this.accountEntity.getId();
     }
 
-    public String getEmail(){
+    public String getEmail() {
         return this.accountEntity.getEmail();
     }
-
 }
