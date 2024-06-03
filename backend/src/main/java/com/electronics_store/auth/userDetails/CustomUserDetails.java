@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.electronics_store.enums.UserStatus;
 import com.electronics_store.model.entity.AccountEntity;
 
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return accountEntity.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getCode()))
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
     }
 
@@ -53,7 +54,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return accountEntity.isStatus();
+        return accountEntity.getStatus() == UserStatus.ACTIVE;
     }
 
     public Long getId() {

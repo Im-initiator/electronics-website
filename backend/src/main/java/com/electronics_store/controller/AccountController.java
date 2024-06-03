@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.electronics_store.model.dto.request.account.CreateAccountByUserDTO;
+import com.electronics_store.model.dto.request.account.CreateAccountByUserDTORequest;
 import com.electronics_store.service.AccountService;
 import com.electronics_store.service.TokenService;
 
@@ -25,13 +25,14 @@ public class AccountController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(
-            @RequestBody CreateAccountByUserDTO createAccountByUserDTO, HttpServletRequest request) {
-        return ResponseEntity.ok().body(accountService.login(createAccountByUserDTO, request));
+            @RequestBody CreateAccountByUserDTORequest createAccountByUserDTORequest, HttpServletRequest request) {
+        return ResponseEntity.ok().body(accountService.login(createAccountByUserDTORequest, request));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerByUser(@Valid @RequestBody CreateAccountByUserDTO createAccountByUserDTO) {
-        return ResponseEntity.ok().body(accountService.createAccountByUser(createAccountByUserDTO));
+    public ResponseEntity<?> registerByUser(
+            @Valid @RequestBody CreateAccountByUserDTORequest createAccountByUserDTORequest) {
+        return ResponseEntity.ok().body(accountService.createAccountByUser(createAccountByUserDTORequest));
     }
 
     @PostMapping("/token/refresh-token")

@@ -22,6 +22,9 @@ public abstract class BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean state;
+
     @Column
     @CreatedDate
     private LocalDateTime createDate;

@@ -11,7 +11,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 
 import com.electronics_store.utils.ResponseErrorUtils;
 
-//được gọi khi spring security phát hiện ngời dùng truy cập vào tài nguyên không được cho phép
+// được gọi khi spring security phát hiện nguời dùng truy cập vào tài nguyên không được cho phép
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(

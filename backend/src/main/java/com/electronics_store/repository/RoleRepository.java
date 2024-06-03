@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.electronics_store.model.entity.RoleEntity;
 
 public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
-    Optional<RoleEntity> findByCode(String name);
+    Optional<RoleEntity> findByName(String name);
 }

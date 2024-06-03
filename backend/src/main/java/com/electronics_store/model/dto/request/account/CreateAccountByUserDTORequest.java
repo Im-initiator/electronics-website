@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class CreateAccountByUserDTO {
+public class CreateAccountByUserDTORequest {
 
     @JsonProperty("user_name")
     @NotBlank(message = "user name do not blank")

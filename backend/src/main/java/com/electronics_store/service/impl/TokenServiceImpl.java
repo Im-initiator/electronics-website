@@ -4,7 +4,6 @@ import java.util.Map;
 
 import jakarta.transaction.Transactional;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.electronics_store.auth.userDetails.CustomUserDetails;

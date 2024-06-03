@@ -27,7 +27,7 @@ public class TokenEntity extends BaseEntity {
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private boolean revoked;
 
-    @Column(name = "token_type")
+    @Column(name = "token_type", length = 20)
     @Enumerated(EnumType.STRING)
     private TokenType tokenType;
 

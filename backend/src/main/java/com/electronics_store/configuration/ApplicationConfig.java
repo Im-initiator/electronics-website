@@ -5,5 +5,4 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement // bật quản lý transaction tự động dùng khi gọi @Transactional
-public class ApplicationConfig {
-}
+public class ApplicationConfig {}

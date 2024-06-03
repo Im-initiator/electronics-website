@@ -14,7 +14,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 
 import com.electronics_store.utils.ResponseErrorUtils;
 
-//được gọi khi spring security nhận biết người dùng không có quyền truy cập hoặc không xác thực
+// được gọi khi spring security nhận biết người dùng không có quyền truy cập hoặc không xác thực
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(

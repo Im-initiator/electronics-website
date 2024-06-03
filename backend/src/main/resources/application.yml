@@ -18,15 +18,15 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
 
 application:
   security:
     jwt:
       secret-key: e61ff531bcdb5c96be3df4b390233264e35d1453b1ced0b162a70de2173e712e
-      expired: 86400000
+      expired: 86400000 #a month
       refresh-token:
-        expired: 604800000
+        expired: 604800000 #a day
 
 
 

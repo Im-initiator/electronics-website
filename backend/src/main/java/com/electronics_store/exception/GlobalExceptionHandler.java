@@ -39,7 +39,11 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(NullPointerException.class)
     public ApiResponse<?> dataNotFount(NullPointerException ex) {
-        return ApiResponse.builder().code(104).success(false).message(ex.getMessage()).build();
+        return ApiResponse.builder()
+                .code(104)
+                .success(false)
+                .message(ex.getMessage())
+                .build();
     }
 
     // xử lý lỗi khi trùng unique trên một trường dữ liệu
