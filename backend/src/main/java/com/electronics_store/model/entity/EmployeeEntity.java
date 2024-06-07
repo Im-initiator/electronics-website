@@ -42,6 +42,6 @@ public class EmployeeEntity extends BaseEntity {
     private AccountEntity account;
 
     @ManyToOne
-    @JoinColumn(name = "branch_id")
+    @JoinColumn(name = "branch_id", nullable = false)
     private BranchEntity branch;
 }

@@ -10,6 +10,9 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.electronics_store.enums.State;
+import com.electronics_store.mapper.StatusConverter;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,8 +25,9 @@ public abstract class BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean state;
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Convert(converter = StatusConverter.class)
+    private State state;
 
     @Column
     @CreatedDate

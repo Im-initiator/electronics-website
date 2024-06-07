@@ -1,16 +1,16 @@
 package com.electronics_store.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/home")
 public class HomeController {
 
     @GetMapping
     public ResponseEntity<?> home() {
+        System.out.println(SecurityContextHolder.getContext());
         return ResponseEntity.ok("OK");
     }
 }

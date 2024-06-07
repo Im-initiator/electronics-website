@@ -40,10 +40,10 @@ public class BranchEntity extends BaseEntity {
     @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ChatEntity> chats = new HashSet<>();
 
+    @OneToMany(mappedBy = "branch", cascade = CascadeType.PERSIST)
+    Set<ProductEntity> products = new HashSet<>();
+
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
     private ShopEntity shop;
-
-    @OneToMany(mappedBy = "branch", cascade = CascadeType.PERSIST)
-    Set<ProductEntity> products = new HashSet<>();
 }

@@ -19,6 +19,14 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: none
+    open-in-view: false # sua ở dây
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+      enabled: true
+
+
 
 application:
   security:
@@ -27,7 +35,8 @@ application:
       expired: 86400000 #a month
       refresh-token:
         expired: 604800000 #a day
-
-
+  file-upload:
+    images:  /static/images/
+    files:  /static/files/
 
 

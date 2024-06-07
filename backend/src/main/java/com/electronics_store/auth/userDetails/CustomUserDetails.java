@@ -64,4 +64,8 @@ public class CustomUserDetails implements UserDetails {
     public String getEmail() {
         return this.accountEntity.getEmail();
     }
+
+    public AccountEntity getAccountEntity() {
+        return this.accountEntity;
+    }
 }

@@ -23,7 +23,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountEntity extends BaseEntity {
-    @Column(unique = true, nullable = false, length = 50) // throw DataIntegrityViolationException
+    // unique không phân biệt chữ hoa chữ thường
+    @Column(unique = true, nullable = false, length = 50, columnDefinition = "VARCHAR(50) COLLATE utf8mb4_unicode_ci")
     private String userName;
 
     @Column(nullable = false)
@@ -35,14 +36,17 @@ public class AccountEntity extends BaseEntity {
     @Column(columnDefinition = "NVARCHAR(100)")
     private String fullName;
 
-    @Column(name = "status", nullable = false, columnDefinition = "TINYINT DEFAULT 0")
+    @Column
+    private String thumbnail;
+
+    @Column(name = "status", nullable = false, columnDefinition = "TINYINT DEFAULT 1")
     @Convert(converter = UserStatusConverter.class)
     private UserStatus status;
 
     @OneToOne(cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private EmployeeEntity employee;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private Set<TokenEntity> tokens = new HashSet<>();
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -33,12 +33,12 @@ import com.electronics_store.exception.CustomAccessDeniedHandler;
 import com.electronics_store.exception.CustomAuthenticationEntryPoint;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
+@RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class WebSecurityConfig {
 
@@ -102,10 +102,20 @@ public class WebSecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth.requestMatchers(
-                                HttpMethod.POST, "/account/login", "/account/register", "/account/token/refresh-token")
+                                HttpMethod.POST, "/login", "/register", "/account/token/refresh-token")
                         .permitAll()
+                        .requestMatchers("/user/**")
+                        .hasAnyAuthority("USER")
+                        .requestMatchers("/admin/**")
+                        .hasAnyAuthority("ADMIN")
+                        .requestMatchers("/manger/**")
+                        .hasAnyAuthority("MANAGER")
+                        .requestMatchers("/employee/**")
+                        .hasAnyAuthority("EMPLOYEE")
                         .requestMatchers(HttpMethod.GET, "/home", "/home/product")
                         .permitAll()
+                        .requestMatchers("/test/**")
+                        .permitAll() // test
                         .dispatcherTypeMatchers(DispatcherType.ERROR) // allow /error default is permitAll
                         .permitAll()
                         .anyRequest()

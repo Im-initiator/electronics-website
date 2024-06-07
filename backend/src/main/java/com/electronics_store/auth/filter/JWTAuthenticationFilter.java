@@ -20,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.electronics_store.auth.userDetails.CustomUserDetails;
 import com.electronics_store.auth.userDetails.CustomUserDetailsService;
 import com.electronics_store.exception.CustomRuntimeException;
+import com.electronics_store.exception.CustomUsernameNotFoundException;
 import com.electronics_store.exception.ErrorSystem;
 import com.electronics_store.service.TokenService;
 import com.electronics_store.service.jwt.JwtService;
@@ -64,7 +65,12 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             throw new CustomRuntimeException(ErrorSystem.ACCESS_TOKEN_IS_CORRECT);
         }
         if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(userName);
+            CustomUserDetails userDetails = null;
+            try {
+                userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(userName);
+            } catch (CustomUsernameNotFoundException e) {
+                throw new CustomRuntimeException(ErrorSystem.ACCESS_TOKEN_IS_CORRECT);
+            }
             boolean isTokenExist = tokenService.isTokenExist(jwt);
             if (jwtService.isTokenValid(jwt, userDetails) && isTokenExist) {
                 UsernamePasswordAuthenticationToken authenticationToken =
@@ -82,7 +88,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean isBypass(@NonNull HttpServletRequest request) {
         Map<String, String> uriPath = new HashMap<>();
-        uriPath.put("/home", "GET");
+        //       uriPath.put("/home", "GET");
         uriPath.put("/product", "GET");
         uriPath.put("/account/login", "POST");
         uriPath.put("/account/register", "POST");

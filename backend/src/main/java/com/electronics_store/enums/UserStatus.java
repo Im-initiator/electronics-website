@@ -1,9 +1,8 @@
 package com.electronics_store.enums;
 
 public enum UserStatus {
-    ACTIVE(0),
-    DELETE(1),
-    LOCK(2);
+    ACTIVE(1),
+    LOCK(0);
     private final Integer value;
 
     UserStatus(int value) {
@@ -16,13 +15,13 @@ public enum UserStatus {
 
     public static UserStatus convert(Integer value) {
         if (value == null) {
-            throw new IllegalArgumentException("User status value can not be null");
+            throw new RuntimeException("User status value can not be null");
         }
         for (UserStatus status : values()) {
             if (status.getValue() == value) {
                 return status;
             }
         }
-        throw new IllegalArgumentException("Invalid UserStatus value: " + value);
+        throw new RuntimeException("Invalid UserStatus value: " + value);
     }
 }

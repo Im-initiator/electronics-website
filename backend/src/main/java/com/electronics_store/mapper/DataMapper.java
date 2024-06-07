@@ -17,4 +17,9 @@ public class DataMapper {
     public static <T> T toDTO(Object entity, Class<T> tClass) {
         return mapper.map(entity, tClass);
     }
+
+    // merge source to destination
+    public static void map(Object source, Object destination) {
+        mapper.map(source, destination);
+    }
 }
