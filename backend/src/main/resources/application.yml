@@ -17,8 +17,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     open-in-view: false # sua ở dây
   servlet:
     multipart:

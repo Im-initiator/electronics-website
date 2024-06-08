@@ -36,6 +36,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import static org.springframework.http.HttpMethod.GET;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -104,6 +106,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((auth) -> auth.requestMatchers(
                                 HttpMethod.POST, "/login", "/register", "/account/token/refresh-token")
                         .permitAll()
+                        .requestMatchers(HttpMethod.GET,"/shop").permitAll()
                         .requestMatchers("/user/**")
                         .hasAnyAuthority("USER")
                         .requestMatchers("/admin/**")
@@ -112,7 +115,7 @@ public class WebSecurityConfig {
                         .hasAnyAuthority("MANAGER")
                         .requestMatchers("/employee/**")
                         .hasAnyAuthority("EMPLOYEE")
-                        .requestMatchers(HttpMethod.GET, "/home", "/home/product")
+                        .requestMatchers(GET, "/home", "/home/product")
                         .permitAll()
                         .requestMatchers("/test/**")
                         .permitAll() // test

@@ -30,4 +30,7 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
                     "SELECT COUNT(a) FROM AccountEntity  a WHERE a.state = :state and a.status = :status and LOWER(a.userName) LIKE LOWER(CONCAT('%',:name,'%'))")
     Page<AccountEntity> findAllAccountActiveAndNameContainOrderByCreatedDate(
             State state, UserStatus status, String name, Pageable pageable);
+
+    @Query("SELECT a FROM AccountEntity a left join fetch a.roles WHERE a.id = :id")
+    Optional<AccountEntity> findAccountById(Long id);
 }

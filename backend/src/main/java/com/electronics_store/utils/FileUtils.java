@@ -49,7 +49,7 @@ public class FileUtils {
         } catch (Exception e) {
             e.printStackTrace();
             FileUtils.deleteMultiPath(listPath, 0);
-            return null;
+            throw new RuntimeException("Error saving image");
         }
     }
 
@@ -58,9 +58,9 @@ public class FileUtils {
         Path pathFile = Paths.get(executePath);
         try {
             return Files.deleteIfExists(pathFile);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            throw new RuntimeException("Error deleting image");
         }
     }
 
@@ -70,8 +70,8 @@ public class FileUtils {
         return Files.exists(pathFile);
     }
 
-    public static boolean isImageExisted(String path) {
-        String executePath = IMAGE_PATH + path;
+    public static boolean isImageExisted(String fileName) {
+        String executePath = IMAGE_PATH + fileName;
         Path pathFile = Paths.get(executePath);
         return Files.exists(pathFile);
     }
@@ -93,6 +93,7 @@ public class FileUtils {
         } catch (Exception e) {
             e.printStackTrace();
             deleteMultiPath(paths, i + 1);
+            throw new RuntimeException("Error deleting multipart image");
         }
     }
 }

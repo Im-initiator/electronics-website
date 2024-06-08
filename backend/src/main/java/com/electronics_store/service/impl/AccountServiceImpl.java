@@ -1,8 +1,6 @@
 package com.electronics_store.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -25,12 +23,13 @@ import com.electronics_store.enums.State;
 import com.electronics_store.enums.UserStatus;
 import com.electronics_store.exception.CustomRuntimeException;
 import com.electronics_store.exception.ErrorSystem;
+import com.electronics_store.mapper.AccountMapper;
 import com.electronics_store.mapper.DataMapper;
 import com.electronics_store.model.dto.ApiResponse;
 import com.electronics_store.model.dto.BaseDTO;
 import com.electronics_store.model.dto.request.account.*;
 import com.electronics_store.model.dto.response.LoginResponseDTO;
-import com.electronics_store.model.dto.response.account.ListAccountByAdminDTO;
+import com.electronics_store.model.dto.response.account.GetAccountByAdminDTO;
 import com.electronics_store.model.dto.response.account.UpdateAccountByUserResponseDTO;
 import com.electronics_store.model.entity.AccountEntity;
 import com.electronics_store.model.entity.RoleEntity;
@@ -58,6 +57,7 @@ public class AccountServiceImpl implements AccountService {
     RoleRepository roleRepository;
     TokenRepository tokenRepository;
     CustomUserDetailsService customUserDetailsService;
+    AccountMapper accountMapper;
 
     static String URL_USER_DEFAULT = "\\files_upload\\images\\userDefault.png";
 
@@ -195,27 +195,44 @@ public class AccountServiceImpl implements AccountService {
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @Override
-    public ApiResponse<ListAccountByAdminDTO> findAllAccountActiveByAdmin(PageAccountByAdminDTO page) {
-        Pageable pageable = PageRequest.of(page.getPage() - 1, page.getLimit());
-        Page<AccountEntity> pageAccount = null;
-        if (page.getName() == null) {
-            pageAccount = accountRepository.findAllAccountActiveOrderByCreatedDate(
-                    State.convert(page.getState()), UserStatus.convert(page.getUserStatus()), pageable);
-        } else {
-            pageAccount = accountRepository.findAllAccountActiveAndNameContainOrderByCreatedDate(
-                    State.convert(page.getState()), UserStatus.convert(page.getUserStatus()), page.getName(), pageable);
+    public ApiResponse<?> findAllAccountActiveByAdmin(Map<String, Object> request) {
+        try {
+            int page = Integer.parseInt((String) request.get("page")) - 1;
+            int limit = Integer.parseInt((String) request.get("limit"));
+            State state = State.convert(Integer.parseInt((String) request.get("state")));
+            UserStatus status = UserStatus.convert(Integer.parseInt((String) request.get("user_status")));
+            Pageable pageable = PageRequest.of(page, limit);
+            Page<AccountEntity> pageAccount = null;
+            String name;
+            try {
+                name = (String) request.get("name");
+            } catch (NullPointerException e) {
+                name = null;
+            }
+            if (name == null) {
+                pageAccount = accountRepository.findAllAccountActiveOrderByCreatedDate(state, status, pageable);
+            } else {
+                pageAccount = accountRepository.findAllAccountActiveAndNameContainOrderByCreatedDate(
+                        state, status, name, pageable);
+            }
+            List<AccountDTO> content = pageAccount.getContent().stream()
+                    .map(accountMapper::toAccountDTO)
+                    .toList();
+            Map<String, Object> result = new HashMap<>();
+            result.put("page", pageAccount.getNumber() + 1);
+            result.put("total_page", pageAccount.getTotalPages());
+            result.put("total_items", pageAccount.getTotalElements());
+            result.put("limit", pageAccount.getSize());
+            result.put("accounts", content);
+            return ApiResponse.builder()
+                    .code(100)
+                    .success(true)
+                    .message("Get account success full")
+                    .data(result)
+                    .build();
+        } catch (ClassCastException | NumberFormatException | NullPointerException e) {
+            throw new CustomRuntimeException(ErrorSystem.PAGE_NOT_FOUND);
         }
-        List<AccountEntity> content = pageAccount.getContent();
-        ListAccountByAdminDTO result = ListAccountByAdminDTO.builder()
-                .accounts(content.stream()
-                        .map(acc -> DataMapper.toDTO(acc, AccountDTO.class))
-                        .toList())
-                .page(pageAccount.getNumber() + 1)
-                .totalPage(pageAccount.getTotalPages())
-                .totalItems(pageAccount.getTotalElements())
-                .limit(pageAccount.getSize())
-                .build();
-        return new ApiResponse<>(result, "Get all account success");
     }
 
     @Override
@@ -225,7 +242,7 @@ public class AccountServiceImpl implements AccountService {
         AccountEntity accountEntity = accountRepository
                 .findById(id)
                 .orElseThrow(() -> new CustomRuntimeException(ErrorSystem.USER_NOT_FOUND));
-        if(account.getRoleIds().isEmpty()){
+        if (account.getRoleIds().isEmpty()) {
             throw new CustomRuntimeException(ErrorSystem.ROLE_NULL);
         }
         Set<RoleEntity> ids = roleRepository.findByIdIn(account.getRoleIds());
@@ -257,9 +274,18 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new CustomRuntimeException(ErrorSystem.USER_NOT_FOUND));
         accountEntity.setState(state);
         accountRepository.save(accountEntity);
-        if(state == State.DELETE){
+        if (state == State.DELETE) {
             return new ApiResponse<>("Remove account success");
         }
         return new ApiResponse<>("Restore account success");
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @Override
+    public ApiResponse<GetAccountByAdminDTO> getAccountByAdmin(Long id) {
+        AccountEntity accountEntity = accountRepository
+                .findAccountById(id)
+                .orElseThrow(() -> new CustomRuntimeException(ErrorSystem.USER_NOT_FOUND));
+        return new ApiResponse<>(accountMapper.toGetAccountByAdminDTO(accountEntity), "Get account success");
     }
 }

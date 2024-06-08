@@ -36,6 +36,9 @@ public class ShopEntity {
     @Column
     private String logo;
 
+    @Column(length = 300)
+    private String map;
+
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<NotificationEntity> notification = new HashSet<>();
 

@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,5 +22,6 @@ public class UpdateAccountByAdmin {
 
     @JsonProperty("role_ids")
     @NotNull
+    @Size(min = 1, message = "Role id must be at least 1")
     private Set<Long> roleIds;
 }

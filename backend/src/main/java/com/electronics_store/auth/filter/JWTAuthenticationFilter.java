@@ -88,7 +88,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean isBypass(@NonNull HttpServletRequest request) {
         Map<String, String> uriPath = new HashMap<>();
-        //       uriPath.put("/home", "GET");
+        uriPath.put("/home", "GET");
+        uriPath.put("/shop", "GET");
         uriPath.put("/product", "GET");
         uriPath.put("/account/login", "POST");
         uriPath.put("/account/register", "POST");

@@ -4,6 +4,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -33,83 +34,88 @@ public class GlobalExceptionHandler {
     }
 
     // Xử lý lỗi trường hợp không tìm thấy tài khoản người dùng
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(CustomUsernameNotFoundException.class)
-    public ApiResponse<?> userNameNotFount(CustomUsernameNotFoundException ex) {
-        return new ApiResponse<>(ErrorSystem.USERNAME_NOTFOUND);
+    public ResponseEntity<?> userNameNotFount(CustomUsernameNotFoundException ex) {
+        return ResponseEntity.status(ErrorSystem.USERNAME_NOTFOUND.getStatus())
+                .body(new ApiResponse<>(ErrorSystem.USERNAME_NOTFOUND));
     }
 
     // Xử lý lỗi không tìm thấy dữ liệu
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(NullPointerException.class)
-    public ApiResponse<?> dataNotFount(NullPointerException ex) {
+    public ResponseEntity<?> dataNotFount(NullPointerException ex) {
         String message = ex.getMessage();
-        if (message == null) {
-            return new ApiResponse<>(ErrorSystem.INTERNAL_SERVER_ERROR);
-        }
-        return ApiResponse.builder()
-                .code(104)
-                .success(false)
-                .message(ex.getMessage())
-                .build();
+            return ResponseEntity.status(ErrorSystem.INTERNAL_SERVER_ERROR.getStatus())
+                    .body(new ApiResponse<>(ErrorSystem.INTERNAL_SERVER_ERROR));
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                .body(ApiResponse.builder()
+//                        .code(104)
+//                        .success(false)
+//                        .message(ex.getMessage())
+//                        .build());
     }
 
     // xử lý lỗi khi trùng unique trên một trường dữ liệu
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class})
-    public ApiResponse<?> duplicateSQL(SQLIntegrityConstraintViolationException ex) {
+    public ResponseEntity<?> duplicateSQL(SQLIntegrityConstraintViolationException ex) {
         String message = ex.getMessage();
         int index = message.indexOf('\'');
         message = message.substring(index + 1, (message.indexOf('\'', index + 1)));
         message += " already exist";
-        return ApiResponse.builder().code(300).success(false).message(message).build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.builder()
+                        .code(300)
+                        .success(false)
+                        .message(message)
+                        .build());
     }
 
     // xử lý lỗi được custom
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(CustomRuntimeException.class)
-    public ApiResponse<?> handleCustomRuntimeException(CustomRuntimeException ex) {
-        return new ApiResponse<>(ex.getErrorSystem());
+    public ResponseEntity<?> handleCustomRuntimeException(CustomRuntimeException ex) {
+        return ResponseEntity.status(ex.getErrorSystem().getStatus()).body(new ApiResponse<>(ex.getErrorSystem()));
     }
 
     // xử lý lỗi JWT
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+
     @ExceptionHandler(MalformedJwtException.class)
-    public ApiResponse<?> handleJWTException(MalformedJwtException ex) {
-        return new ApiResponse<>(ErrorSystem.ACCESS_TOKEN_IS_CORRECT);
+    public ResponseEntity<?> handleJWTException(MalformedJwtException ex) {
+        return ResponseEntity.status(ErrorSystem.ACCESS_TOKEN_IS_CORRECT.getStatus())
+                .body(new ApiResponse<>(ErrorSystem.ACCESS_TOKEN_IS_CORRECT));
     }
 
     // Xử lý lỗi JWT token hết hạn
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ExpiredJwtException.class)
-    public ApiResponse<?> jwtTokenExpired(ExpiredJwtException ex) {
-        return new ApiResponse<>(ErrorSystem.ACCESS_JWT_TOKEN_EXPIRED);
+    public ResponseEntity<?> jwtTokenExpired(ExpiredJwtException ex) {
+        return ResponseEntity.status(ErrorSystem.ACCESS_JWT_TOKEN_EXPIRED.getStatus())
+                .body(new ApiResponse<>(ErrorSystem.ACCESS_JWT_TOKEN_EXPIRED));
     }
 
     // Xử lý lỗi không tìm thấy resource, file mã nguon
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoResourceFoundException.class)
-    public ApiResponse<?> resourceNotFound(NoResourceFoundException ex) {
-        return new ApiResponse<>(ErrorSystem.RESOURCE_NOTFOUND);
+    public ResponseEntity<?> resourceNotFound(NoResourceFoundException ex) {
+        return ResponseEntity.status(ErrorSystem.RESOURCE_NOTFOUND.getStatus())
+                .body(new ApiResponse<>(ErrorSystem.RESOURCE_NOTFOUND));
     }
 
     // Xử  lý  lỗi file quá lớn
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ApiResponse<?> handleMaxFilesize(ExpiredJwtException ex) {
-        return new ApiResponse<>(ErrorSystem.MAX_FILES_SIZE);
+    public ResponseEntity<?> handleMaxFilesize(ExpiredJwtException ex) {
+        return ResponseEntity.status(ErrorSystem.MAX_FILES_SIZE.getStatus())
+                .body(new ApiResponse<>(ErrorSystem.MAX_FILES_SIZE));
     }
 
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    // xử lý lỗi truy cập vào method không được hỗ trợ
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ApiResponse<?> handlerMethodNotAllow(HttpRequestMethodNotSupportedException ex) {
-        return new ApiResponse<>(ErrorSystem.METHOD_NOT_SUPPORT);
+    public ResponseEntity<?> handlerMethodNotAllow(HttpRequestMethodNotSupportedException ex) {
+        return ResponseEntity.status(ErrorSystem.METHOD_NOT_SUPPORT.getStatus())
+                .body(new ApiResponse<>(ErrorSystem.METHOD_NOT_SUPPORT));
     }
 
     // xử lý lỗi các truong hợp  còn lại
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({Exception.class, RuntimeException.class})
-    public ApiResponse<?> handleRunTimeException(Exception ex) {
-        return new ApiResponse<>(ErrorSystem.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<?> handleRunTimeException(Exception ex) {
+        return ResponseEntity.status(ErrorSystem.INTERNAL_SERVER_ERROR.getStatus())
+                .body(new ApiResponse<>(ErrorSystem.INTERNAL_SERVER_ERROR));
     }
 }
