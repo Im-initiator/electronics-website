@@ -26,7 +26,7 @@ public class SocialEntity extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String link;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id", nullable = false)
     private ShopEntity shop;
 }

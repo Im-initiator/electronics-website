@@ -2,7 +2,7 @@ package com.electronics_store.enums;
 
 public enum UserStatus {
     ACTIVE(1),
-    LOCK(0);
+    LOCKED(0);
     private final Integer value;
 
     UserStatus(int value) {

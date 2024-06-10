@@ -57,7 +57,8 @@ public class FileUtils {
         String executePath = ROOT_PATH + path;
         Path pathFile = Paths.get(executePath);
         try {
-            return Files.deleteIfExists(pathFile);
+            Files.delete(pathFile);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Error deleting image");

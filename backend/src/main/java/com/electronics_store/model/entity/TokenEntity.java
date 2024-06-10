@@ -31,7 +31,7 @@ public class TokenEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private TokenType tokenType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private AccountEntity account;
 }

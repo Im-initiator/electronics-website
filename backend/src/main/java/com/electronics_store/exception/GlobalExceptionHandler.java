@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -73,6 +74,14 @@ public class GlobalExceptionHandler {
     // xử lý lỗi được custom
     @ExceptionHandler(CustomRuntimeException.class)
     public ResponseEntity<?> handleCustomRuntimeException(CustomRuntimeException ex) {
+        if (ex.getErrorSystem() == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.builder()
+                            .code(400)
+                            .success(false)
+                            .message(ex.getMessage())
+                            .build());
+        }
         return ResponseEntity.status(ex.getErrorSystem().getStatus()).body(new ApiResponse<>(ex.getErrorSystem()));
     }
 
@@ -110,6 +119,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handlerMethodNotAllow(HttpRequestMethodNotSupportedException ex) {
         return ResponseEntity.status(ErrorSystem.METHOD_NOT_SUPPORT.getStatus())
                 .body(new ApiResponse<>(ErrorSystem.METHOD_NOT_SUPPORT));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<?> handlerMissingRequestParam(MissingServletRequestParameterException ex) {
+        return ResponseEntity.status(ErrorSystem.PAGE_NOT_FOUND.getStatus())
+                .body(new ApiResponse<>(ErrorSystem.PAGE_NOT_FOUND));
     }
 
     // xử lý lỗi các truong hợp  còn lại

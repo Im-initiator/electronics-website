@@ -5,10 +5,7 @@ import com.electronics_store.model.dto.request.shop.UpdateShopByAdminDTO;
 import com.electronics_store.service.ShopService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController(value = "adminShopController")
 @RequestMapping("/admin/shop")
@@ -18,6 +15,11 @@ public class ShopController {
 
     public ShopController(ShopService shopService){
         this.shopService = shopService;
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<?>> getShop(){
+        return ResponseEntity.ok().body(shopService.getShop());
     }
 
     @PutMapping

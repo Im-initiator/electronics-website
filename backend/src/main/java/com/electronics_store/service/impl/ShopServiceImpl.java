@@ -48,13 +48,15 @@ public class ShopServiceImpl implements ShopService {
            //Kiểm tra xem file đã tồn tại hay chưa
            if(!FileUtils.isImageExisted(shopUpdateDTO.getImage().getOriginalFilename())){
                path = FileUtils.saveImage(shopUpdateDTO.getImage());
-               if(shop.getLogo()!=null) {
+               if(shop.getLogo()!=null && FileUtils.checkPath(shop.getLogo())){
                    if (!FileUtils.deleteImage(shop.getLogo())) {
                        throw new RuntimeException("Can't delete image");
                    }
                }
                shop.setLogo(path);
            }
+           shopRepository.save(shop);
+           return new ApiResponse<>("Update shop successfully");
        }catch (Exception e){
            if (path != null) {
                FileUtils.deleteImage(path);
@@ -62,7 +64,6 @@ public class ShopServiceImpl implements ShopService {
            throw new CustomRuntimeException(ErrorSystem.SAVE_IMAGE_FAILED);
 
        }
-        shopRepository.save(shop);
-        return new ApiResponse<>("Update shop successfully");
+
     }
 }

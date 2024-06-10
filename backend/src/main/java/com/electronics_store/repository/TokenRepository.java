@@ -11,6 +11,7 @@ import com.electronics_store.model.entity.TokenEntity;
 
 public interface TokenRepository extends JpaRepository<TokenEntity, Long> {
 
+    @Query("SELECT t FROM TokenEntity t WHERE t.accessToken = :token")
     Optional<TokenEntity> findByAccessToken(String token);
 
     Optional<TokenEntity> findByRefreshToken(String token);

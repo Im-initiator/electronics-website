@@ -1,5 +1,7 @@
 package com.electronics_store.enums;
 
+import com.electronics_store.exception.CustomRuntimeException;
+
 public enum State {
     ACTIVE(1),
     DELETE(0);
@@ -16,14 +18,14 @@ public enum State {
 
     public static State convert(Integer value) {
         if (value == null) {
-            throw new RuntimeException("Status value can not be null");
+            throw new CustomRuntimeException("Status value can not be null");
         }
         if (value == 1) {
             return ACTIVE;
         } else if (value == 0) {
             return DELETE;
         } else {
-            throw new RuntimeException("Status value is invalid");
+            throw new CustomRuntimeException("Status value is invalid");
         }
     }
 }

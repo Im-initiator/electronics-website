@@ -26,6 +26,7 @@ public enum ErrorSystem {
     PAGE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "Page not found"),
     TOKEN_NOT_FOUND(404, HttpStatus.NOT_FOUND, "Token not found"),
     SAVE_IMAGE_FAILED(500, HttpStatus.INTERNAL_SERVER_ERROR, "Save image failed")
+
     ;
 
 
@@ -38,4 +39,6 @@ public enum ErrorSystem {
         this.message = message;
         this.status = status;
     }
+
+
 }
