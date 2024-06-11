@@ -12,6 +12,7 @@ import com.electronics_store.model.dto.request.account.CreateAccountByAdminReque
 import com.electronics_store.model.dto.request.account.CreateAccountByUserRequestDTO;
 import com.electronics_store.model.dto.request.account.UpdateAccountByAdmin;
 import com.electronics_store.model.dto.request.account.UpdateAccountByUserRequestDTO;
+import com.electronics_store.model.dto.request.auth.LoginDTO;
 import com.electronics_store.model.dto.response.LoginResponseDTO;
 import com.electronics_store.model.dto.response.account.GetAccountByAdminDTO;
 import com.electronics_store.model.dto.response.account.UpdateAccountByUserResponseDTO;
@@ -23,13 +24,12 @@ public interface AccountService {
 
     ApiResponse<?> createAccountByAdmin(CreateAccountByAdminRequestDTO account);
 
-    ApiResponse<LoginResponseDTO> login(
-            CreateAccountByUserRequestDTO createAccountByUserRequestDTO, HttpServletRequest request);
+    ApiResponse<LoginResponseDTO> login(LoginDTO loginDTO, HttpServletRequest request);
 
     ApiResponse<UpdateAccountByUserResponseDTO> updateUserInformationByUser(
             UpdateAccountByUserRequestDTO updateAccountByUserRequestDTO);
 
-    ApiResponse<?> findAllAccountActiveByAdmin(Map<String, Object> request);
+    ApiResponse<?> findAllAccountActiveByAdmin(Map<String, String> request);
 
     ApiResponse<?> updateAccountByAdmin(Long id, UpdateAccountByAdmin account);
 

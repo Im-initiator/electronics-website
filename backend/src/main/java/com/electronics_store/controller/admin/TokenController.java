@@ -8,10 +8,12 @@ import com.electronics_store.model.dto.ApiResponse;
 import com.electronics_store.model.dto.request.token.UpdateTokenByAdminDTO;
 import com.electronics_store.service.TokenService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+@Tag(name = "_admin/token", description = "Token Management")
 @PreAuthorize("hasAnyAuthority('ADMIN')")
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -21,8 +23,8 @@ public class TokenController {
 
     TokenService tokenService;
 
-    @GetMapping("/{id}/token")
-    public ResponseEntity<ApiResponse<?>> getToken(@PathVariable Long id) {
+    @GetMapping("/{userId}/token")
+    public ResponseEntity<ApiResponse<?>> getToken(@PathVariable("userId") Long id) {
         return ResponseEntity.ok().body(tokenService.getTokenByAdmin(id));
     }
 

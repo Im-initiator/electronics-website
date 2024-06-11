@@ -2,6 +2,7 @@ package com.electronics_store.controller.user;
 
 import jakarta.validation.Valid;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<UpdateAccountByUserResponseDTO>> updateAccountByUser(
             @Valid @ModelAttribute UpdateAccountByUserRequestDTO account) {
         return ResponseEntity.ok(accountService.updateUserInformationByUser(account));

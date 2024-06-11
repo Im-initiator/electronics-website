@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 public enum ErrorSystem {
     USERNAME_NOTFOUND(104, HttpStatus.NOT_FOUND, "User name not found"),
+    USER_NAME_IS_EXISTS(104, HttpStatus.BAD_REQUEST, "User name already exists"),
     USER_NOT_FOUND(104, HttpStatus.NOT_FOUND, "User not found"),
     ACCESS_DENIED(103, HttpStatus.FORBIDDEN, "You do not have access to this resource"),
     UNAUTHORIZED(101, HttpStatus.UNAUTHORIZED, "You need authentication to access"),
@@ -25,10 +26,7 @@ public enum ErrorSystem {
     METHOD_NOT_SUPPORT(405, HttpStatus.METHOD_NOT_ALLOWED, "This method is not supported"),
     PAGE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "Page not found"),
     TOKEN_NOT_FOUND(404, HttpStatus.NOT_FOUND, "Token not found"),
-    SAVE_IMAGE_FAILED(500, HttpStatus.INTERNAL_SERVER_ERROR, "Save image failed")
-
-    ;
-
+    SAVE_IMAGE_FAILED(500, HttpStatus.INTERNAL_SERVER_ERROR, "Save image failed");
 
     private final int code;
     private final String message;
@@ -39,6 +37,4 @@ public enum ErrorSystem {
         this.message = message;
         this.status = status;
     }
-
-
 }

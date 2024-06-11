@@ -1,10 +1,14 @@
 package com.electronics_store.service.impl;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +32,7 @@ import com.electronics_store.mapper.DataMapper;
 import com.electronics_store.model.dto.ApiResponse;
 import com.electronics_store.model.dto.BaseDTO;
 import com.electronics_store.model.dto.request.account.*;
+import com.electronics_store.model.dto.request.auth.LoginDTO;
 import com.electronics_store.model.dto.response.LoginResponseDTO;
 import com.electronics_store.model.dto.response.account.GetAccountByAdminDTO;
 import com.electronics_store.model.dto.response.account.UpdateAccountByUserResponseDTO;
@@ -40,6 +45,7 @@ import com.electronics_store.repository.TokenRepository;
 import com.electronics_store.service.AccountService;
 import com.electronics_store.service.jwt.JwtService;
 import com.electronics_store.utils.FileUtils;
+import com.electronics_store.utils.ResponseUtils;
 import com.electronics_store.utils.SecurityUtils;
 
 import lombok.AccessLevel;
@@ -58,6 +64,7 @@ public class AccountServiceImpl implements AccountService {
     TokenRepository tokenRepository;
     CustomUserDetailsService customUserDetailsService;
     AccountMapper accountMapper;
+    CacheManager cacheManager;
 
     static String URL_USER_DEFAULT = "\\files_upload\\images\\userDefault.png";
 
@@ -70,6 +77,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public ApiResponse<LoginResponseDTO> createAccountByUser(
             CreateAccountByUserRequestDTO createAccountByUserRequestDTO) {
+        if (accountRepository.isExitingUserName(createAccountByUserRequestDTO.getUserName())) {
+            throw new CustomRuntimeException(ErrorSystem.USER_NAME_IS_EXISTS);
+        }
         RoleEntity role = roleRepository
                 .findByName(RoleType.USER.name())
                 .orElseThrow(() -> new NullPointerException("Role User not found"));
@@ -103,6 +113,9 @@ public class AccountServiceImpl implements AccountService {
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @Override
     public ApiResponse<?> createAccountByAdmin(CreateAccountByAdminRequestDTO account) {
+        if (accountRepository.isExitingUserName(account.getUserName())) {
+            throw new CustomRuntimeException(ErrorSystem.USER_NAME_IS_EXISTS);
+        }
         AccountEntity accountEntity = DataMapper.toEntity(account, AccountEntity.class);
         accountEntity.setPassword(passwordEncoder.encode(accountEntity.getPassword()));
         Set<RoleEntity> roles = roleRepository.findByIdIn(account.getRoleIds());
@@ -114,16 +127,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional
-    public ApiResponse<LoginResponseDTO> login(
-            CreateAccountByUserRequestDTO createAccountByUserRequestDTO, HttpServletRequest request) {
+    @Transactional(rollbackOn = Exception.class)
+    public ApiResponse<LoginResponseDTO> login(LoginDTO loginDTO, HttpServletRequest request) {
         // information web
         WebAuthenticationDetails webAuthenticationDetailsSource =
                 new WebAuthenticationDetailsSource().buildDetails(request);
         // create credentials
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(
-                        createAccountByUserRequestDTO.getUserName(), createAccountByUserRequestDTO.getPassword());
+                new UsernamePasswordAuthenticationToken(loginDTO.getUserName(), loginDTO.getPassword());
         // authenticate
         usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken)
                 authenticationManager.authenticate(usernamePasswordAuthenticationToken);
@@ -141,7 +152,9 @@ public class AccountServiceImpl implements AccountService {
             int countToken =
                     tokenRepository.countAllByAccount_Id(userDetails.getId()).orElse(0);
             if (countToken >= 3) {
-                tokenRepository.deleteOldTokenByUser(userDetails.getId());
+                List<TokenEntity> tokens =
+                        tokenRepository.findAllByAccountIdOrderByCreateDateOffsetTwo(userDetails.getId());
+                tokenRepository.deleteAll(tokens);
             }
             tokenRepository.save(token);
             LoginResponseDTO data = LoginResponseDTO.builder()
@@ -195,12 +208,12 @@ public class AccountServiceImpl implements AccountService {
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @Override
-    public ApiResponse<?> findAllAccountActiveByAdmin(Map<String, Object> request) {
+    public ApiResponse<?> findAllAccountActiveByAdmin(Map<String, String> request) {
         try {
-            int page = Integer.parseInt((String) request.get("page")) - 1;
-            int limit = Integer.parseInt((String) request.get("limit"));
-            State state = State.convert(Integer.parseInt((String) request.get("state")));
-            UserStatus status = UserStatus.convert(Integer.parseInt((String) request.get("user_status")));
+            int page = Integer.parseInt(request.get("page")) - 1;
+            int limit = Integer.parseInt(request.get("limit"));
+            State state = State.convert(Integer.parseInt(request.get("state")));
+            UserStatus status = UserStatus.convert(Integer.parseInt( request.get("user_status")));
             Pageable pageable = PageRequest.of(page, limit);
             Page<AccountEntity> pageAccount = null;
             String name;
@@ -215,21 +228,10 @@ public class AccountServiceImpl implements AccountService {
                 pageAccount = accountRepository.findAllAccountActiveAndNameContainOrderByCreatedDate(
                         state, status, name, pageable);
             }
-            List<AccountDTO> content = pageAccount.getContent().stream()
-                    .map(accountMapper::toAccountDTO)
-                    .toList();
-            Map<String, Object> result = new HashMap<>();
-            result.put("page", pageAccount.getNumber() + 1);
-            result.put("total_page", pageAccount.getTotalPages());
-            result.put("total_items", pageAccount.getTotalElements());
-            result.put("limit", pageAccount.getSize());
-            result.put("accounts", content);
-            return ApiResponse.builder()
-                    .code(100)
-                    .success(true)
-                    .message("Get account success full")
-                    .data(result)
-                    .build();
+
+            Map<String, Object> result = ResponseUtils.getPageResponse(
+                    pageable, pageAccount, accountMapper, a -> accountMapper.toAccountDTO((AccountEntity) a));
+            return new ApiResponse<>(result, "Get all account success");
         } catch (ClassCastException | NumberFormatException | NullPointerException e) {
             throw new CustomRuntimeException(ErrorSystem.PAGE_NOT_FOUND);
         }

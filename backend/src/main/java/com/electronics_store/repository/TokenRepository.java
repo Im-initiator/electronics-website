@@ -21,6 +21,9 @@ public interface TokenRepository extends JpaRepository<TokenEntity, Long> {
             "delete from TokenEntity t2 where t2.id IN (select tid from (select t.id AS tid from TokenEntity t where t.account.id = :userId order by t.createDate limit 1))")
     void deleteOldTokenByUser(Long userId);
 
+    @Query("SELECT t from TokenEntity t WHERE t.account.id = :accountId ORDER BY t.createDate DESC OFFSET 2")
+    List<TokenEntity> findAllByAccountIdOrderByCreateDateOffsetTwo(Long accountId);
+
     Optional<TokenEntity> findByIdAndAccount_Id(Long id, Long accountId);
 
     Optional<Integer> countAllByAccount_Id(Long userId);

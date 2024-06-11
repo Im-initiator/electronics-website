@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.electronics_store.exception.CustomRuntimeException;
 import com.electronics_store.exception.ErrorSystem;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "error", description = "Error Handling don't care")
 @RestController
 public class CustomErrorController implements ErrorController {
     @RequestMapping("/error")

@@ -46,19 +46,19 @@ public class AccountEntity extends BaseEntity {
     @OneToOne(cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private EmployeeEntity employee;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.REMOVE)
     private Set<TokenEntity> tokens = new HashSet<>();
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ChatEntity> chats = new HashSet<>();
 
-    @OneToMany(mappedBy = "account", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private Set<CartEntity> carts = new HashSet<>();
 
-    @OneToMany(mappedBy = "account", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private Set<FavoriteEntity> favorites = new HashSet<>();
 
-    @OneToMany(mappedBy = "account", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account", orphanRemoval = true, cascade = CascadeType.PERSIST)
     private Set<OrderEntity> orders = new HashSet<>();
 
     @ManyToMany

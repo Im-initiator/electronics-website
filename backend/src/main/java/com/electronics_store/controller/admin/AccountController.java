@@ -16,8 +16,11 @@ import com.electronics_store.model.dto.response.account.GetAccountByAdminDTO;
 import com.electronics_store.service.AccountService;
 import com.electronics_store.service.TokenService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "_admin/account", description = "Account Management")
 @RestController(value = "userAdminController")
 @RequestMapping("/admin/account")
 @PreAuthorize("hasAnyAuthority('ADMIN')")
@@ -27,8 +30,9 @@ public class AccountController {
     private final AccountService accountService;
     private final TokenService tokenService;
 
+    @Operation(summary = "Get page", description = "params: page,limit,state,user_status,name(allow null)")
     @GetMapping
-    public ResponseEntity<ApiResponse<?>> getPageAccount(@RequestParam Map<String, Object> request) {
+    public ResponseEntity<ApiResponse<?>> getPageAccount(@RequestParam Map<String, String> request) {
         return ResponseEntity.ok().body(accountService.findAllAccountActiveByAdmin(request));
     }
 

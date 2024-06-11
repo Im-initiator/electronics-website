@@ -33,4 +33,7 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
 
     @Query("SELECT a FROM AccountEntity a left join fetch a.roles WHERE a.id = :id")
     Optional<AccountEntity> findAccountById(Long id);
+
+    @Query("SELECT CASE WHEN COUNT (a) > 0  THEN TRUE ELSE FALSE END FROM AccountEntity a WHERE a.userName = :username")
+    boolean isExitingUserName(String username);
 }

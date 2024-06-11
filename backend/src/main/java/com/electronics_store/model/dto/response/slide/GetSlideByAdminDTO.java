@@ -1,10 +1,10 @@
 package com.electronics_store.model.dto.response.slide;
 
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 
-import java.time.LocalDateTime;
+import lombok.Data;
 
 @Data
 public class GetSlideByAdminDTO {
@@ -13,9 +13,10 @@ public class GetSlideByAdminDTO {
     private String shortDescription;
     private String image;
     private String link;
+
     @JsonProperty("create_date")
     private LocalDateTime createDate;
+
     @JsonProperty("modified_date")
     private LocalDateTime modifiedDate;
-
 }

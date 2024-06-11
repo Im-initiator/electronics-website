@@ -1,8 +1,5 @@
 package com.electronics_store.exception;
 
-import java.sql.SQLIntegrityConstraintViolationException;
-
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -45,42 +42,51 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<?> dataNotFount(NullPointerException ex) {
         String message = ex.getMessage();
-            return ResponseEntity.status(ErrorSystem.INTERNAL_SERVER_ERROR.getStatus())
-                    .body(new ApiResponse<>(ErrorSystem.INTERNAL_SERVER_ERROR));
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .body(ApiResponse.builder()
-//                        .code(104)
-//                        .success(false)
-//                        .message(ex.getMessage())
-//                        .build());
+        return ResponseEntity.status(ErrorSystem.INTERNAL_SERVER_ERROR.getStatus())
+                .body(new ApiResponse<>(ErrorSystem.INTERNAL_SERVER_ERROR));
+        //        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        //                .body(ApiResponse.builder()
+        //                        .code(104)
+        //                        .success(false)
+        //                        .message(ex.getMessage())
+        //                        .build());
     }
 
-    // xử lý lỗi khi trùng unique trên một trường dữ liệu
-
-    @ExceptionHandler({SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class})
-    public ResponseEntity<?> duplicateSQL(SQLIntegrityConstraintViolationException ex) {
-        String message = ex.getMessage();
-        int index = message.indexOf('\'');
-        message = message.substring(index + 1, (message.indexOf('\'', index + 1)));
-        message += " already exist";
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.builder()
-                        .code(300)
-                        .success(false)
-                        .message(message)
-                        .build());
-    }
+    //    // xử lý lỗi khi trùng unique trên một trường dữ liệu
+    //
+    //    @ExceptionHandler({SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class})
+    //    public ResponseEntity<?> duplicateSQL(SQLIntegrityConstraintViolationException ex) {
+    //        String message = ex.getMessage();
+    //        int index = message.indexOf('\'');
+    //        message = message.substring(index + 1, (message.indexOf('\'', index + 1)));
+    //        message += " already exist";
+    //        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    //                .body(ApiResponse.builder()
+    //                        .code(300)
+    //                        .success(false)
+    //                        .message(message)
+    //                        .build());
+    //    }
 
     // xử lý lỗi được custom
     @ExceptionHandler(CustomRuntimeException.class)
     public ResponseEntity<?> handleCustomRuntimeException(CustomRuntimeException ex) {
-        if (ex.getErrorSystem() == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(ApiResponse.builder()
-                            .code(400)
-                            .success(false)
-                            .message(ex.getMessage())
-                            .build());
+        if (ex.getErrorSystem() == null) {
+            if (ex.getStatus() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(ApiResponse.builder()
+                                .code(400)
+                                .success(false)
+                                .message(ex.getMessage())
+                                .build());
+            } else {
+                return ResponseEntity.status(ex.getStatus())
+                        .body(ApiResponse.builder()
+                                .code(ex.getStatus().value())
+                                .success(false)
+                                .message(ex.getMessage())
+                                .build());
+            }
         }
         return ResponseEntity.status(ex.getErrorSystem().getStatus()).body(new ApiResponse<>(ex.getErrorSystem()));
     }

@@ -1,12 +1,13 @@
 package com.electronics_store.configuration;
 
+import static org.springframework.http.HttpMethod.GET;
+
 import java.util.*;
 
 import jakarta.servlet.DispatcherType;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -36,8 +37,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import static org.springframework.http.HttpMethod.GET;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -47,6 +46,20 @@ public class WebSecurityConfig {
     JWTAuthenticationFilter jwtAuthenticationFilter;
     CustomLogoutHandler customLogoutHandler;
 
+    // spotless:off
+    private static final String[]  permitAll = {
+            "/login",
+            "/register",
+            "/account/token/refresh-token",
+            "/shop",
+            "/home",
+            "/home/product",
+            "/shop",
+            "/swagger-ui/**",
+            "/v3/**",
+    };
+
+    // spotless:on
     @Bean
     AuthenticationEntryPoint authenticationEntryPoint() {
         return new CustomAuthenticationEntryPoint();
@@ -103,10 +116,9 @@ public class WebSecurityConfig {
                 //                .cors( c -> c.configurationSource(corsConfigurationSource()))//config cors
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((auth) -> auth.requestMatchers(
-                                HttpMethod.POST, "/login", "/register", "/account/token/refresh-token")
+                .authorizeHttpRequests((auth) -> auth.requestMatchers(permitAll)
                         .permitAll()
-                        .requestMatchers(HttpMethod.GET,"/shop").permitAll()
+                        //               .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/user/**")
                         .hasAnyAuthority("USER")
                         .requestMatchers("/admin/**")
@@ -117,8 +129,6 @@ public class WebSecurityConfig {
                         .hasAnyAuthority("EMPLOYEE")
                         .requestMatchers(GET, "/home", "/home/product")
                         .permitAll()
-                        .requestMatchers("/test/**")
-                        .permitAll() // test
                         .dispatcherTypeMatchers(DispatcherType.ERROR) // allow /error default is permitAll
                         .permitAll()
                         .anyRequest()

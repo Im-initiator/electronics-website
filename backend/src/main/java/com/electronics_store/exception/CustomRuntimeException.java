@@ -1,15 +1,28 @@
 package com.electronics_store.exception;
 
-import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
 public class CustomRuntimeException extends RuntimeException {
-    private ErrorSystem errorSystem;
+    private final ErrorSystem errorSystem;
+    private HttpStatus status;
 
-   public CustomRuntimeException(String message) {
-       super(message);
-       this.errorSystem = null;
+    public CustomRuntimeException(String message) {
+        super(message);
+        this.errorSystem = null;
+    }
+
+    public CustomRuntimeException(ErrorSystem errorSystem) {
+        super(errorSystem.getMessage());
+        this.errorSystem = errorSystem;
+        this.status = null;
+    }
+
+    public CustomRuntimeException(String message, HttpStatus status) {
+        super(message);
+        this.errorSystem = null;
+        this.status = status;
     }
 }
