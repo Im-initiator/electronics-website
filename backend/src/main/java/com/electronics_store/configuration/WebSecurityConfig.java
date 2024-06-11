@@ -8,6 +8,7 @@ import jakarta.servlet.DispatcherType;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -118,7 +119,8 @@ public class WebSecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth.requestMatchers(permitAll)
                         .permitAll()
-                        //               .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/shop")
+                        .permitAll()
                         .requestMatchers("/user/**")
                         .hasAnyAuthority("USER")
                         .requestMatchers("/admin/**")

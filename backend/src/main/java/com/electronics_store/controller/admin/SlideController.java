@@ -13,7 +13,6 @@ import com.electronics_store.enums.State;
 import com.electronics_store.model.dto.ApiResponse;
 import com.electronics_store.model.dto.request.slide.CreateAndUpdateSlideByAdminDTO;
 import com.electronics_store.service.SlideService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +41,14 @@ public class SlideController {
     public ResponseEntity<?> createService(@Valid @ModelAttribute CreateAndUpdateSlideByAdminDTO slideDTO) {
         return ResponseEntity.ok().body(slideService.createSlideByAdmin(slideDTO));
     }
+    public ResponseEntity<?> getSlide(@PathVariable("id") Long id, @RequestParam("state") int state) {
+        return ResponseEntity.ok().body(slideService.getOneSlideByAdmin(id, state));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createSlide(@Valid @ModelAttribute CreateAndUpdateSlideByAdminDTO slideDTO) {
+        return ResponseEntity.ok().body(slideService.createSlideByAdmin(slideDTO));
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateService(
@@ -50,6 +57,7 @@ public class SlideController {
     }
 
     @DeleteMapping("/{id}")
+
     public ResponseEntity<?> deleteService(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(slideService.updateSlideByAdmin(id, State.ACTIVE, State.DELETE));
     }

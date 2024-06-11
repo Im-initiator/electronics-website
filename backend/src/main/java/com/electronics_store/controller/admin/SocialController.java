@@ -11,7 +11,6 @@ import com.electronics_store.enums.State;
 import com.electronics_store.model.dto.request.slide.CreateAndUpdateSlideByAdminDTO;
 import com.electronics_store.model.dto.request.social.CreateAndUpdateSocialDTO;
 import com.electronics_store.service.SocialService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

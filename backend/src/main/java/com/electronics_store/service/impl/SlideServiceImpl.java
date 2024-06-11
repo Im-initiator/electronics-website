@@ -21,7 +21,6 @@ import com.electronics_store.repository.SlideRepository;
 import com.electronics_store.service.SlideService;
 import com.electronics_store.utils.FileUtils;
 import com.electronics_store.utils.ResponseUtils;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -40,7 +39,7 @@ public class SlideServiceImpl implements SlideService {
         List<SlideEntity> list = slideRepository.findByState(state);
         List<GetSlideByAdminDTO> result =
                 list.stream().map(slideMapper::toGetSlideByAdminDTO).toList();
-        return new ApiResponse<>(result, "Get all service successfully!");
+        return new ApiResponse<>(result, "Get all slides successfully!");
     }
 
     @Override
@@ -66,7 +65,6 @@ public class SlideServiceImpl implements SlideService {
             }
             Map<String, Object> result = ResponseUtils.getPageResponse(
                     pageable, pageContent, slideMapper, e -> slideMapper.toGetSlideByAdminDTO((SlideEntity) e));
-
             return new ApiResponse<>(result, "Get all slides successfully!");
         } catch (ClassCastException | NumberFormatException | NullPointerException e) {
             throw new CustomRuntimeException(ErrorSystem.PAGE_NOT_FOUND);

@@ -24,7 +24,6 @@ import com.electronics_store.repository.SocialRepository;
 import com.electronics_store.service.SocialService;
 import com.electronics_store.utils.FileUtils;
 import com.electronics_store.utils.ResponseUtils;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -117,13 +116,11 @@ public class SocialServiceImpl implements SocialService {
                         list.stream().map(socialMapper::toGetSocialByAdminDTO).toList();
                 return new ApiResponse<>(result, "Get all socials successfully!");
             }
-
             Page<SocialEntity> pageContent = null;
             int page = Integer.parseInt(params.get("page")) - 1;
             int limit = Integer.parseInt(params.get("limit"));
             State state = State.convert(Integer.parseInt(params.get("state")));
             Pageable pageable = PageRequest.of(page, limit);
-
             if (params.containsKey("name")) {
                 pageContent = socialRepository.findAllByNameAndStateOrderByCreateDateDESC(
                         state, params.get("name"), pageable);
