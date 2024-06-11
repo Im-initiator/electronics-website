@@ -8,8 +8,8 @@ import lombok.Getter;
 public class CustomRuntimeException extends RuntimeException {
     private ErrorSystem errorSystem;
 
-   public CustomRuntimeException(String message) {
-       super(message);
-       this.errorSystem = null;
+    public CustomRuntimeException(String message) {
+        super(message);
+        this.errorSystem = null;
     }
 }

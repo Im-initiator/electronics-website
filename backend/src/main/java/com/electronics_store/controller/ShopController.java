@@ -15,7 +15,6 @@ public class ShopController {
 
     private ShopService shopService;
 
-
     public ShopController(ShopService shopService) {
         this.shopService = shopService;
     }

@@ -1,5 +1,7 @@
 package com.electronics_store.configuration;
 
+import static org.springframework.http.HttpMethod.GET;
+
 import java.util.*;
 
 import jakarta.servlet.DispatcherType;
@@ -35,8 +37,6 @@ import com.electronics_store.exception.CustomAuthenticationEntryPoint;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import static org.springframework.http.HttpMethod.GET;
 
 @Configuration
 @EnableWebSecurity
@@ -106,7 +106,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((auth) -> auth.requestMatchers(
                                 HttpMethod.POST, "/login", "/register", "/account/token/refresh-token")
                         .permitAll()
-                        .requestMatchers(HttpMethod.GET,"/shop").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/shop")
+                        .permitAll()
                         .requestMatchers("/user/**")
                         .hasAnyAuthority("USER")
                         .requestMatchers("/admin/**")

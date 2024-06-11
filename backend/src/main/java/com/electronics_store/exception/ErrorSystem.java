@@ -25,10 +25,7 @@ public enum ErrorSystem {
     METHOD_NOT_SUPPORT(405, HttpStatus.METHOD_NOT_ALLOWED, "This method is not supported"),
     PAGE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "Page not found"),
     TOKEN_NOT_FOUND(404, HttpStatus.NOT_FOUND, "Token not found"),
-    SAVE_IMAGE_FAILED(500, HttpStatus.INTERNAL_SERVER_ERROR, "Save image failed")
-
-    ;
-
+    SAVE_IMAGE_FAILED(500, HttpStatus.INTERNAL_SERVER_ERROR, "Save image failed");
 
     private final int code;
     private final String message;
@@ -39,6 +36,4 @@ public enum ErrorSystem {
         this.message = message;
         this.status = status;
     }
-
-
 }

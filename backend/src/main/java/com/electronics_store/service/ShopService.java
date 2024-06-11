@@ -6,5 +6,6 @@ import com.electronics_store.model.dto.request.shop.UpdateShopByAdminDTO;
 
 public interface ShopService {
     ApiResponse<ShopDTO> getShop();
+
     ApiResponse<?> updateShop(UpdateShopByAdminDTO shopUpdateDTO);
 }

@@ -45,14 +45,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<?> dataNotFount(NullPointerException ex) {
         String message = ex.getMessage();
-            return ResponseEntity.status(ErrorSystem.INTERNAL_SERVER_ERROR.getStatus())
-                    .body(new ApiResponse<>(ErrorSystem.INTERNAL_SERVER_ERROR));
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .body(ApiResponse.builder()
-//                        .code(104)
-//                        .success(false)
-//                        .message(ex.getMessage())
-//                        .build());
+        return ResponseEntity.status(ErrorSystem.INTERNAL_SERVER_ERROR.getStatus())
+                .body(new ApiResponse<>(ErrorSystem.INTERNAL_SERVER_ERROR));
+        //        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        //                .body(ApiResponse.builder()
+        //                        .code(104)
+        //                        .success(false)
+        //                        .message(ex.getMessage())
+        //                        .build());
     }
 
     // xử lý lỗi khi trùng unique trên một trường dữ liệu
@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
     // xử lý lỗi được custom
     @ExceptionHandler(CustomRuntimeException.class)
     public ResponseEntity<?> handleCustomRuntimeException(CustomRuntimeException ex) {
-        if (ex.getErrorSystem() == null){
+        if (ex.getErrorSystem() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ApiResponse.builder()
                             .code(400)

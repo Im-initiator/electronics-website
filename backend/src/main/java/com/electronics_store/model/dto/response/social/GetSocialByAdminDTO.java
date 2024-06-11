@@ -13,5 +13,4 @@ public class GetSocialByAdminDTO {
     private String link;
 
     private int state;
-
 }
