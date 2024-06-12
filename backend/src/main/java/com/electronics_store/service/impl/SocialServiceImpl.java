@@ -24,6 +24,7 @@ import com.electronics_store.repository.SocialRepository;
 import com.electronics_store.service.SocialService;
 import com.electronics_store.utils.FileUtils;
 import com.electronics_store.utils.ResponseUtils;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -109,8 +110,8 @@ public class SocialServiceImpl implements SocialService {
     @Override
     public ApiResponse<?> findAllByAdmin(Map<String, String> params) {
         try {
+            State state = State.convert(Integer.parseInt(params.getOrDefault("state", "1")));
             if (!params.containsKey("limit") && !params.containsKey("page") && !params.containsKey("name")) {
-                State state = State.convert(Integer.parseInt(params.get("state")));
                 List<SocialEntity> list = socialRepository.findAllByState(state);
                 List<GetSocialByAdminDTO> result =
                         list.stream().map(socialMapper::toGetSocialByAdminDTO).toList();
@@ -119,7 +120,6 @@ public class SocialServiceImpl implements SocialService {
             Page<SocialEntity> pageContent = null;
             int page = Integer.parseInt(params.get("page")) - 1;
             int limit = Integer.parseInt(params.get("limit"));
-            State state = State.convert(Integer.parseInt(params.get("state")));
             Pageable pageable = PageRequest.of(page, limit);
             if (params.containsKey("name")) {
                 pageContent = socialRepository.findAllByNameAndStateOrderByCreateDateDESC(

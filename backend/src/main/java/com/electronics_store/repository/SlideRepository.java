@@ -20,6 +20,7 @@ public interface SlideRepository extends JpaRepository<SlideEntity, Long> {
     List<SlideEntity> findByStateAndNameContaining(State state, String name);
 
     Page<SlideEntity> findAllByStateOrderByCreateDateDesc(State state, Pageable pageable);
+
     @Query(
             "SELECT s FROM SlideEntity s WHERE LOWER(s.name) LIKE LOWER(concat('%',:name,'%')) AND s.state = :state ORDER BY s.createDate DESC")
     Page<SlideEntity> findAllByNameAndStateOrderByCreateDateDESC(State state, String name, Pageable pageable);

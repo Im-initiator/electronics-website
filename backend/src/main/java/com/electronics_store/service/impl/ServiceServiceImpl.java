@@ -45,8 +45,8 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public ApiResponse<?> getPageByAdmin(Map<String, String> params) {
         try {
+            State state = State.convert(Integer.parseInt(params.getOrDefault("state", "1")));
             if (!params.containsKey("page") && !params.containsKey("limit") && !params.containsKey("name")) {
-                State state = State.convert(Integer.parseInt(params.get("state")));
                 List<ServiceEntity> list = serviceRepository.findByState(state);
                 List<GetServiceByAdminDTO> result =
                         list.stream().map(serviceMapper::toGetServiceByAdminDTO).toList();
@@ -54,7 +54,6 @@ public class ServiceServiceImpl implements ServiceService {
             }
             int page = Integer.parseInt(params.get("page")) - 1;
             int limit = Integer.parseInt(params.get("limit"));
-            State state = State.convert(Integer.parseInt(params.get("state")));
             Pageable pageable = PageRequest.of(page, limit);
             Page<ServiceEntity> pageContent = null;
             if (params.containsKey("name")) {
@@ -76,7 +75,7 @@ public class ServiceServiceImpl implements ServiceService {
     public ApiResponse<?> updateByAdmin(Long id, CreateAndUpdateServiceByAdminDTO serviceDTO) {
         ServiceEntity serviceEntity = serviceRepository
                 .findByIdAndState(id, State.ACTIVE)
-                .orElseThrow(() -> new CustomRuntimeException("Service not found!",HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomRuntimeException("Service not found!", HttpStatus.NOT_FOUND));
         serviceMapper.merge(serviceDTO, serviceEntity);
         serviceRepository.save(serviceEntity);
         return new ApiResponse<>("Update service successfully!");
@@ -108,7 +107,7 @@ public class ServiceServiceImpl implements ServiceService {
     public ApiResponse<?> getOneByAdmin(Long id, int state) {
         ServiceEntity ServiceEntity = serviceRepository
                 .findByIdAndState(id, State.convert(state))
-                .orElseThrow(() -> new CustomRuntimeException("Service not found!",HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomRuntimeException("Service not found!", HttpStatus.NOT_FOUND));
         return new ApiResponse<>(serviceMapper.toGetServiceByAdminDTO(ServiceEntity), "Get slide successfully!");
     }
 }

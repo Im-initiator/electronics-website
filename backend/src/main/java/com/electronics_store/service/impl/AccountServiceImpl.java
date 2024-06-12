@@ -1,27 +1,18 @@
 package com.electronics_store.service.impl;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
 import com.electronics_store.auth.userDetails.CustomUserDetails;
-import com.electronics_store.auth.userDetails.CustomUserDetailsService;
 import com.electronics_store.enums.RoleType;
 import com.electronics_store.enums.State;
 import com.electronics_store.enums.UserStatus;
@@ -32,10 +23,9 @@ import com.electronics_store.mapper.DataMapper;
 import com.electronics_store.model.dto.ApiResponse;
 import com.electronics_store.model.dto.BaseDTO;
 import com.electronics_store.model.dto.request.account.*;
-import com.electronics_store.model.dto.request.auth.LoginDTO;
 import com.electronics_store.model.dto.response.LoginResponseDTO;
-import com.electronics_store.model.dto.response.account.GetAccountByAdminDTO;
-import com.electronics_store.model.dto.response.account.UpdateAccountByUserResponseDTO;
+import com.electronics_store.model.dto.response.account.GetAccountByAdminByAdminDTO;
+import com.electronics_store.model.dto.response.account.UpdateAccountByUserDTO;
 import com.electronics_store.model.entity.AccountEntity;
 import com.electronics_store.model.entity.RoleEntity;
 import com.electronics_store.model.entity.TokenEntity;
@@ -56,15 +46,12 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class AccountServiceImpl implements AccountService {
-    AuthenticationManager authenticationManager;
     JwtService jwtService;
     AccountRepository accountRepository;
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
     TokenRepository tokenRepository;
-    CustomUserDetailsService customUserDetailsService;
     AccountMapper accountMapper;
-    CacheManager cacheManager;
 
     static String URL_USER_DEFAULT = "\\files_upload\\images\\userDefault.png";
 
@@ -107,7 +94,7 @@ public class AccountServiceImpl implements AccountService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
-        return new ApiResponse<LoginResponseDTO>(response, "create account successful");
+        return new ApiResponse<>(response, "create account successful");
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
@@ -128,47 +115,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public ApiResponse<LoginResponseDTO> login(LoginDTO loginDTO, HttpServletRequest request) {
-        // information web
-        WebAuthenticationDetails webAuthenticationDetailsSource =
-                new WebAuthenticationDetailsSource().buildDetails(request);
-        // create credentials
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(loginDTO.getUserName(), loginDTO.getPassword());
-        // authenticate
-        usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken)
-                authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        usernamePasswordAuthenticationToken.setDetails(webAuthenticationDetailsSource);
-        // check authentication
-        if (usernamePasswordAuthenticationToken.isAuthenticated()) {
-            CustomUserDetails userDetails = (CustomUserDetails) usernamePasswordAuthenticationToken.getPrincipal();
-            String accessToken = jwtService.generateToken(userDetails);
-            String refreshToken = jwtService.generateRefreshToken(userDetails);
-            TokenEntity token = TokenEntity.builder()
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .account(userDetails.getAccountEntity())
-                    .build();
-            int countToken =
-                    tokenRepository.countAllByAccount_Id(userDetails.getId()).orElse(0);
-            if (countToken >= 3) {
-                List<TokenEntity> tokens =
-                        tokenRepository.findAllByAccountIdOrderByCreateDateOffsetTwo(userDetails.getId());
-                tokenRepository.deleteAll(tokens);
-            }
-            tokenRepository.save(token);
-            LoginResponseDTO data = LoginResponseDTO.builder()
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .build();
-            return new ApiResponse<>(data, "Login success");
-        }
-        throw new CustomRuntimeException(ErrorSystem.INTERNAL_SERVER_ERROR);
-    }
-
-    @Override
-    @Transactional(rollbackOn = Exception.class)
-    public ApiResponse<UpdateAccountByUserResponseDTO> updateUserInformationByUser(
+    public ApiResponse<UpdateAccountByUserDTO> updateUserInformationByUser(
             UpdateAccountByUserRequestDTO updateAccountByUserRequestDTO) {
         updateAccountByUserRequestDTO.setId(SecurityUtils.getPrincipalId());
         String filename = updateAccountByUserRequestDTO.getImage().getOriginalFilename();
@@ -191,8 +138,7 @@ public class AccountServiceImpl implements AccountService {
                     account.setThumbnail(image);
                 }
                 account = accountRepository.save(account);
-                UpdateAccountByUserResponseDTO accountResponse =
-                        DataMapper.toDTO(account, UpdateAccountByUserResponseDTO.class);
+                UpdateAccountByUserDTO accountResponse = DataMapper.toDTO(account, UpdateAccountByUserDTO.class);
                 return new ApiResponse<>(accountResponse, "Update account successful");
             }
             return new ApiResponse<>(ErrorSystem.INTERNAL_SERVER_ERROR);
@@ -213,7 +159,7 @@ public class AccountServiceImpl implements AccountService {
             int page = Integer.parseInt(request.get("page")) - 1;
             int limit = Integer.parseInt(request.get("limit"));
             State state = State.convert(Integer.parseInt(request.get("state")));
-            UserStatus status = UserStatus.convert(Integer.parseInt( request.get("user_status")));
+            UserStatus status = UserStatus.convert(Integer.parseInt(request.get("user_status")));
             Pageable pageable = PageRequest.of(page, limit);
             Page<AccountEntity> pageAccount = null;
             String name;
@@ -230,7 +176,7 @@ public class AccountServiceImpl implements AccountService {
             }
 
             Map<String, Object> result = ResponseUtils.getPageResponse(
-                    pageable, pageAccount, accountMapper, a -> accountMapper.toAccountDTO((AccountEntity) a));
+                    pageable, pageAccount, accountMapper, a -> accountMapper.toGetAccountByAdminDTO((AccountEntity) a));
             return new ApiResponse<>(result, "Get all account success");
         } catch (ClassCastException | NumberFormatException | NullPointerException e) {
             throw new CustomRuntimeException(ErrorSystem.PAGE_NOT_FOUND);
@@ -248,6 +194,9 @@ public class AccountServiceImpl implements AccountService {
             throw new CustomRuntimeException(ErrorSystem.ROLE_NULL);
         }
         Set<RoleEntity> ids = roleRepository.findByIdIn(account.getRoleIds());
+        if (ids.isEmpty()) {
+            throw new CustomRuntimeException("Role is not correct", HttpStatus.BAD_REQUEST);
+        }
         accountEntity.setRoles(ids);
         accountEntity.setStatus(UserStatus.convert(account.getStatus()));
         accountRepository.save(accountEntity);
@@ -284,7 +233,7 @@ public class AccountServiceImpl implements AccountService {
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @Override
-    public ApiResponse<GetAccountByAdminDTO> getAccountByAdmin(Long id) {
+    public ApiResponse<GetAccountByAdminByAdminDTO> getAccountByAdmin(Long id) {
         AccountEntity accountEntity = accountRepository
                 .findAccountById(id)
                 .orElseThrow(() -> new CustomRuntimeException(ErrorSystem.USER_NOT_FOUND));

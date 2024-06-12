@@ -1,15 +1,17 @@
 package com.electronics_store.model.dto.response.account;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 import com.electronics_store.model.dto.request.role.RoleDTO;
+import com.electronics_store.model.dto.response.BaseResponseByAdminDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class GetAccountByAdminDTO {
+@Getter
+@Setter
+public class GetAccountByAdminByAdminDTO extends BaseResponseByAdminDTO {
     private Long id;
 
     @JsonProperty("user_name")
@@ -17,18 +19,10 @@ public class GetAccountByAdminDTO {
 
     private String email;
 
-    private int state;
-
     private int status;
 
     @JsonProperty("full_name")
     private String fullName;
-
-    @JsonProperty("create_date")
-    private LocalDateTime createDate;
-
-    @JsonProperty("modify_date")
-    private LocalDateTime modifyDate;
 
     private Set<RoleDTO> roles;
 }

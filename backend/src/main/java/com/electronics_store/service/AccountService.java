@@ -3,8 +3,6 @@ package com.electronics_store.service;
 import java.util.Map;
 import java.util.Optional;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import com.electronics_store.enums.State;
 import com.electronics_store.model.dto.ApiResponse;
 import com.electronics_store.model.dto.BaseDTO;
@@ -12,10 +10,9 @@ import com.electronics_store.model.dto.request.account.CreateAccountByAdminReque
 import com.electronics_store.model.dto.request.account.CreateAccountByUserRequestDTO;
 import com.electronics_store.model.dto.request.account.UpdateAccountByAdmin;
 import com.electronics_store.model.dto.request.account.UpdateAccountByUserRequestDTO;
-import com.electronics_store.model.dto.request.auth.LoginDTO;
 import com.electronics_store.model.dto.response.LoginResponseDTO;
-import com.electronics_store.model.dto.response.account.GetAccountByAdminDTO;
-import com.electronics_store.model.dto.response.account.UpdateAccountByUserResponseDTO;
+import com.electronics_store.model.dto.response.account.GetAccountByAdminByAdminDTO;
+import com.electronics_store.model.dto.response.account.UpdateAccountByUserDTO;
 
 public interface AccountService {
     Optional<CreateAccountByUserRequestDTO> findByUserName(String userName);
@@ -24,9 +21,7 @@ public interface AccountService {
 
     ApiResponse<?> createAccountByAdmin(CreateAccountByAdminRequestDTO account);
 
-    ApiResponse<LoginResponseDTO> login(LoginDTO loginDTO, HttpServletRequest request);
-
-    ApiResponse<UpdateAccountByUserResponseDTO> updateUserInformationByUser(
+    ApiResponse<UpdateAccountByUserDTO> updateUserInformationByUser(
             UpdateAccountByUserRequestDTO updateAccountByUserRequestDTO);
 
     ApiResponse<?> findAllAccountActiveByAdmin(Map<String, String> request);
@@ -37,5 +32,5 @@ public interface AccountService {
 
     ApiResponse<?> updateAccountByAdmin(Long id, State state);
 
-    ApiResponse<GetAccountByAdminDTO> getAccountByAdmin(Long id);
+    ApiResponse<GetAccountByAdminByAdminDTO> getAccountByAdmin(Long id);
 }

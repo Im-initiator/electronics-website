@@ -13,6 +13,7 @@ import com.electronics_store.enums.State;
 import com.electronics_store.model.dto.ApiResponse;
 import com.electronics_store.model.dto.request.slide.CreateAndUpdateSlideByAdminDTO;
 import com.electronics_store.service.SlideService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -33,32 +34,23 @@ public class SlideController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getService(@PathVariable("id") Long id, @RequestParam("state") int state) {
-        return ResponseEntity.ok().body(slideService.getOneSlideByAdmin(id, state));
-    }
-
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createService(@Valid @ModelAttribute CreateAndUpdateSlideByAdminDTO slideDTO) {
-        return ResponseEntity.ok().body(slideService.createSlideByAdmin(slideDTO));
-    }
     public ResponseEntity<?> getSlide(@PathVariable("id") Long id, @RequestParam("state") int state) {
         return ResponseEntity.ok().body(slideService.getOneSlideByAdmin(id, state));
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createSlide(@Valid @ModelAttribute CreateAndUpdateSlideByAdminDTO slideDTO) {
         return ResponseEntity.ok().body(slideService.createSlideByAdmin(slideDTO));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateService(
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateSlide(
             @PathVariable("id") Long id, @Valid @ModelAttribute CreateAndUpdateSlideByAdminDTO slideDTO) {
         return ResponseEntity.ok().body(slideService.updateSlideByAdmin(id, slideDTO));
     }
 
     @DeleteMapping("/{id}")
-
-    public ResponseEntity<?> deleteService(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteSlide(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(slideService.updateSlideByAdmin(id, State.ACTIVE, State.DELETE));
     }
 

@@ -10,7 +10,7 @@ import com.electronics_store.model.dto.request.token.UpdateTokenByAdminDTO;
 import com.electronics_store.model.entity.TokenEntity;
 
 @Mapper(componentModel = "spring")
-public interface TokenMapper {
+public interface TokenMapper extends StateMapper {
     TokenDTO toTokenDTO(TokenEntity tokenEntity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

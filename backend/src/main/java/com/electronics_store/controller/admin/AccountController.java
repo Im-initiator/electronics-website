@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import com.electronics_store.enums.State;
 import com.electronics_store.model.dto.ApiResponse;
 import com.electronics_store.model.dto.request.account.*;
-import com.electronics_store.model.dto.response.account.GetAccountByAdminDTO;
+import com.electronics_store.model.dto.response.account.GetAccountByAdminByAdminDTO;
 import com.electronics_store.service.AccountService;
 import com.electronics_store.service.TokenService;
 
@@ -42,7 +42,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<GetAccountByAdminDTO>> getUser(@NotNull @PathVariable Long id) {
+    public ResponseEntity<ApiResponse<GetAccountByAdminByAdminDTO>> getUser(@NotNull @PathVariable Long id) {
         return ResponseEntity.ok(accountService.getAccountByAdmin(id));
     }
 

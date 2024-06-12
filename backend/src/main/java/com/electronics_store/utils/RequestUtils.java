@@ -12,4 +12,12 @@ public class RequestUtils {
         int limit = Integer.parseInt(params.get("limit"));
         return PageRequest.of(page, limit);
     }
+
+    public static boolean isPageExists(Map<String, String> params) {
+        return params.containsKey("page") && params.containsKey("limit");
+    }
+
+    public static boolean isNameExists(Map<String, String> params) {
+        return params.containsKey("name");
+    }
 }

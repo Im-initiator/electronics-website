@@ -11,12 +11,12 @@ import lombok.Setter;
  * Lưu  trữ bài viết của cửa hàng.
  */
 @Entity
-@Table(name = "new")
+@Table(name = "post")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewEntity extends BaseEntity {
+public class PostEntity extends BaseEntity {
     @Column(columnDefinition = "NVARCHAR(50)")
     private String category;
 

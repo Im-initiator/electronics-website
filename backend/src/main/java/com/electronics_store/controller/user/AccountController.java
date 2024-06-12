@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.electronics_store.model.dto.ApiResponse;
 import com.electronics_store.model.dto.request.account.UpdateAccountByUserRequestDTO;
-import com.electronics_store.model.dto.response.account.UpdateAccountByUserResponseDTO;
+import com.electronics_store.model.dto.response.account.UpdateAccountByUserDTO;
 import com.electronics_store.service.AccountService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<UpdateAccountByUserResponseDTO>> updateAccountByUser(
+    public ResponseEntity<ApiResponse<UpdateAccountByUserDTO>> updateAccountByUser(
             @Valid @ModelAttribute UpdateAccountByUserRequestDTO account) {
         return ResponseEntity.ok(accountService.updateUserInformationByUser(account));
     }

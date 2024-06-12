@@ -1,9 +1,13 @@
 package com.electronics_store.model.dto.response.social;
 
-import lombok.Data;
+import com.electronics_store.model.dto.response.BaseResponseByAdminDTO;
 
-@Data
-public class GetSocialByAdminDTO {
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+public class GetSocialByAdminDTO extends BaseResponseByAdminDTO {
 
     private Long id;
     private String name;
@@ -11,6 +15,4 @@ public class GetSocialByAdminDTO {
     private String image;
 
     private String link;
-
-    private int state;
 }

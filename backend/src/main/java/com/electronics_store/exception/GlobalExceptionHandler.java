@@ -2,6 +2,7 @@ package com.electronics_store.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -28,7 +29,10 @@ public class GlobalExceptionHandler {
         BindingResult bindingResult = ex.getBindingResult();
         FieldError firstError = bindingResult.getFieldErrors().getFirst();
         String message = firstError.getDefaultMessage();
-        return ApiResponse.builder().code(300).success(false).message(message).build();
+        if (message!=null && message.length()>50){
+                message = "Invalid input";
+        }
+        return ApiResponse.builder().code(400).success(false).message(message).build();
     }
 
     // Xử lý lỗi trường hợp không tìm thấy tài khoản người dùng
@@ -127,10 +131,17 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(ErrorSystem.METHOD_NOT_SUPPORT));
     }
 
+    // xử lý khi thiếu tham số truy vấn
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<?> handlerMissingRequestParam(MissingServletRequestParameterException ex) {
         return ResponseEntity.status(ErrorSystem.PAGE_NOT_FOUND.getStatus())
                 .body(new ApiResponse<>(ErrorSystem.PAGE_NOT_FOUND));
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<?> handleUserNamePasswordIsCorrect(AuthenticationException ex) {
+        return ResponseEntity.status(ErrorSystem.INCORRECT_ACCOUNT.getStatus())
+                .body(new ApiResponse<>(ErrorSystem.INCORRECT_ACCOUNT));
     }
 
     // xử lý lỗi các truong hợp  còn lại

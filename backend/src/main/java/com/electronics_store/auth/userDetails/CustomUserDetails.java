@@ -64,5 +64,4 @@ public class CustomUserDetails implements UserDetails {
     public String getEmail() {
         return this.accountEntity.getEmail();
     }
-
 }

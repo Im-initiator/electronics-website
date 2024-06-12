@@ -4,6 +4,7 @@ import java.util.Map;
 
 import jakarta.validation.Valid;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import com.electronics_store.enums.State;
 import com.electronics_store.model.dto.request.slide.CreateAndUpdateSlideByAdminDTO;
 import com.electronics_store.model.dto.request.social.CreateAndUpdateSocialDTO;
 import com.electronics_store.service.SocialService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +36,13 @@ public class SocialController {
         return ResponseEntity.ok(socialService.findAllByAdmin(params));
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> create(
             @Valid @ModelAttribute CreateAndUpdateSlideByAdminDTO createAndUpdateSlideByAdminDTO) {
         return ResponseEntity.ok().body(socialService.createSocialByAdmin(createAndUpdateSlideByAdminDTO));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> update(
             @PathVariable Long id, @Valid @ModelAttribute CreateAndUpdateSocialDTO createAndUpdateSocialDTO) {
         return ResponseEntity.ok().body(socialService.updateSocialByAdmin(id, createAndUpdateSocialDTO));

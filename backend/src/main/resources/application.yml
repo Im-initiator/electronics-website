@@ -13,6 +13,8 @@ spring:
     url: jdbc:mysql://MYSQL8010.site4now.net/db_aa9cb6_mysql #jdbc:mysql://localhost:3306/electronics_project #jdbc:mysql://mysql-container:3306/electronics_project
     username: aa9cb6_mysql
     password: maianh@1234
+  cache:
+    type: caffeine
   jpa:
     generate-ddl: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
@@ -24,7 +26,11 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
-
+  mvc:
+    format:
+      date: dd/MM/yyyy
+      date-time: ss:mm:HH dd/MM/yyyy
+      time: ss:mm:HH
   servlet:
     multipart:
       max-file-size: 10MB
@@ -50,6 +56,14 @@ application:
   file-upload:
     images:  /static/images/
     files:  /static/files/
+
+#logging:
+#  level:
+#    org:
+#      hibernate:
+#        SQL: DEBUG
+#      springframework:
+#        cache: TRACE
 
 
 

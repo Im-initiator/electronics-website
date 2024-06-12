@@ -2,6 +2,7 @@ package com.electronics_store.controller.admin;
 
 import jakarta.validation.Valid;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,7 @@ public class ShopController {
         return ResponseEntity.ok().body(shopService.getShop());
     }
 
-    @PutMapping
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<?>> updateShop(@Valid @ModelAttribute UpdateShopByAdminDTO shopUpdateDTO) {
         return ResponseEntity.ok().body(shopService.updateShop(shopUpdateDTO));
     }

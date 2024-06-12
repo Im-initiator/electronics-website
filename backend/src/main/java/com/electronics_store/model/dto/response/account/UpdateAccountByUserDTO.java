@@ -16,7 +16,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateAccountByUserResponseDTO {
+public class UpdateAccountByUserDTO {
     @JsonProperty("user_name")
     @NotBlank(message = "User name do not blank")
     private String userName;

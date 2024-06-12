@@ -30,6 +30,12 @@ public class PromotionEntity extends BaseEntity {
     @Column
     private String image;
 
+    @Column(nullable = false)
+    private Double percent;
+
+    @Column(nullable = false)
+    private Double maxDiscount;
+
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
     private ShopEntity shop;

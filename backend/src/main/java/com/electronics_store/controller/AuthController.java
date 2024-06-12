@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import com.electronics_store.model.dto.request.account.CreateAccountByUserRequestDTO;
 import com.electronics_store.model.dto.request.auth.LoginDTO;
 import com.electronics_store.service.AccountService;
+import com.electronics_store.service.AuthenticationService;
 import com.electronics_store.service.TokenService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,11 +25,14 @@ public class AuthController {
     private AccountService accountService;
 
     @Autowired
+    private AuthenticationService authenticationService;
+
+    @Autowired
     private TokenService tokenService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request) {
-        return ResponseEntity.ok().body(accountService.login(loginDTO, request));
+        return ResponseEntity.ok().body(authenticationService.login(loginDTO, request));
     }
 
     @PostMapping("/register")

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,9 @@ import com.electronics_store.repository.ShopRepository;
 import com.electronics_store.repository.SlideRepository;
 import com.electronics_store.service.SlideService;
 import com.electronics_store.utils.FileUtils;
+import com.electronics_store.utils.RequestUtils;
 import com.electronics_store.utils.ResponseUtils;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -45,17 +46,14 @@ public class SlideServiceImpl implements SlideService {
     @Override
     public ApiResponse<?> getAllSlidesByAdmin(Map<String, String> params) {
         try {
+            State state = State.convert(Integer.parseInt(params.getOrDefault("state", "1")));
             if (!params.containsKey("page") && !params.containsKey("limit") && !params.containsKey("name")) {
-                State state = State.convert(Integer.parseInt(params.get("state")));
                 List<SlideEntity> list = slideRepository.findByState(state);
                 List<GetSlideByAdminDTO> result =
                         list.stream().map(slideMapper::toGetSlideByAdminDTO).toList();
                 return new ApiResponse<>(result, "Get all slides successfully!");
             }
-            int page = Integer.parseInt(params.get("page")) - 1;
-            int limit = Integer.parseInt(params.get("limit"));
-            State state = State.convert(Integer.parseInt(params.get("state")));
-            Pageable pageable = PageRequest.of(page, limit);
+            Pageable pageable = RequestUtils.getPageable(params);
             Page<SlideEntity> pageContent = null;
             if (params.containsKey("name")) {
                 String name = params.get("name");

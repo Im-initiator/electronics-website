@@ -55,7 +55,7 @@ public class ShopEntity {
     private Set<ServiceEntity> services = new HashSet<>();
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<NewEntity> news = new HashSet<>();
+    private Set<PostEntity> posts = new HashSet<>();
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PromotionEntity> promotions = new HashSet<>();

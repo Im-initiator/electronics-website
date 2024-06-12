@@ -2,6 +2,9 @@ package com.electronics_store.service.impl;
 
 import jakarta.transaction.Transactional;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.electronics_store.exception.CustomRuntimeException;
@@ -27,6 +30,7 @@ public class ShopServiceImpl implements ShopService {
     ShopRepository shopRepository;
     ShopMapper shopMapper;
 
+    @Cacheable(value = "shop", key = "'shop'")
     @Override
     public ApiResponse<ShopDTO> getShop() {
         ShopEntity shop = shopRepository.getShop();
@@ -37,7 +41,9 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
+    @CacheEvict(value = "shop", key = "'shop'", allEntries = true)
     @Transactional(rollbackOn = Exception.class)
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ApiResponse<?> updateShop(UpdateShopByAdminDTO shopUpdateDTO) {
         ShopEntity shop = shopRepository.getShop();
         String path = null;

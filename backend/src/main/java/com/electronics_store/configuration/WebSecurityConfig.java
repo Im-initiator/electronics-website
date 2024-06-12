@@ -48,7 +48,7 @@ public class WebSecurityConfig {
     CustomLogoutHandler customLogoutHandler;
 
     // spotless:off
-    private static final String[]  permitAll = {
+    private static final String[] PERMITALL = {
             "/login",
             "/register",
             "/account/token/refresh-token",
@@ -58,6 +58,21 @@ public class WebSecurityConfig {
             "/shop",
             "/swagger-ui/**",
             "/v3/**",
+    };
+    private static final String[]  ADMIN = {
+            "/admin/**"
+    };
+
+    private static final String[]  MANAGER = {
+            "/manager/**",
+    };
+
+    private static final String[]  EMPLOYEE = {
+            "/employee/**"
+    };
+
+    private static final String[]  USER = {
+            "/user/**"
     };
 
     // spotless:on
@@ -117,20 +132,22 @@ public class WebSecurityConfig {
                 //                .cors( c -> c.configurationSource(corsConfigurationSource()))//config cors
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((auth) -> auth.requestMatchers(permitAll)
+                .authorizeHttpRequests((auth) -> auth.requestMatchers(PERMITALL)
                         .permitAll()
-                        .requestMatchers(HttpMethod.GET, "/shop")
-                        .permitAll()
-                        .requestMatchers("/user/**")
+                        .requestMatchers(USER)
                         .hasAnyAuthority("USER")
-                        .requestMatchers("/admin/**")
-                        .hasAnyAuthority("ADMIN")
-                        .requestMatchers("/manger/**")
-                        .hasAnyAuthority("MANAGER")
-                        .requestMatchers("/employee/**")
+                        .requestMatchers(EMPLOYEE)
                         .hasAnyAuthority("EMPLOYEE")
+                        .requestMatchers(MANAGER)
+                        .hasAnyAuthority("MANAGER")
+                        .requestMatchers(ADMIN)
+                        .hasAnyAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/shop/**")
+                        .permitAll()
                         .requestMatchers(GET, "/home", "/home/product")
                         .permitAll()
+                        .requestMatchers("/admin/post")
+                        .hasAnyAuthority("ADMIN", "MANAGER")
                         .dispatcherTypeMatchers(DispatcherType.ERROR) // allow /error default is permitAll
                         .permitAll()
                         .anyRequest()

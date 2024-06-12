@@ -1,22 +1,16 @@
 package com.electronics_store.model.dto.response.slide;
 
-import java.time.LocalDateTime;
+import com.electronics_store.model.dto.response.BaseResponseByAdminDTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
-import lombok.Data;
-
-@Data
-public class GetSlideByAdminDTO {
+@Getter
+@Setter
+public class GetSlideByAdminDTO extends BaseResponseByAdminDTO {
     private Long id;
     private String name;
     private String shortDescription;
     private String image;
     private String link;
-
-    @JsonProperty("create_date")
-    private LocalDateTime createDate;
-
-    @JsonProperty("modified_date")
-    private LocalDateTime modifiedDate;
 }
