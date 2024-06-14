@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import ClientLayout from '@/views/layouts/ClientLayout.vue';
+import AuthLayout from '@/views/layouts/AuthLayout.vue';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,9 +15,11 @@ const router = createRouter({
         },
         {
             path: '/auth',
+            component: AuthLayout,
             children: [
                 {
-                    path: 'login'
+                    path: 'login',
+                    component: () => import('@/views/LoginPage.vue')
                 },
                 {
                     path: 'register'

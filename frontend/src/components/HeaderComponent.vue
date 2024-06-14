@@ -39,7 +39,7 @@ const setSearchingStatus = () => isSearching.value = !isSearching.value;
                 <router-link to=""><UserIcon class="w-6 h-6"/></router-link>
                 <SearchIcon class="w-6 h-6 cursor-pointer" @click="setSearchingStatus"/>
             </div>
-            <nav class="fixed h-screen w-screen text-2xl font-medium flex flex-col gap-4 top-0 px-8 py-16 bg-white transition-transform duration-500 ease-in-out md:hidden" :class="isMenuOpen ? 'translate-x-0' : '-translate-x-full'">
+            <nav class="fixed h-screen w-screen text-2xl font-medium flex flex-col gap-4 top-0 left-0 px-8 py-16 bg-white transition-transform duration-500 ease-in-out md:hidden z-20" :class="isMenuOpen ? 'translate-x-0' : '-translate-x-full'">
                 <CrossIcon class="absolute top-8 right-16 w-6 h-6" @click="setMenuStatus(false)"/>
                 <router-link to="">Khuyến mãi</router-link>
                 <router-link to="">Điện thoại</router-link>
@@ -49,7 +49,7 @@ const setSearchingStatus = () => isSearching.value = !isSearching.value;
                 <router-link to="">Bài viết</router-link>
             </nav>
         </div>
-        <div class="flex items-center gap-2 overflow-hidden max-w-[1000px] mx-auto transition-all duration-500" :class="isSearching ? 'md:scale-y-100' : 'md:scale-y-0'">
+        <div v-if="isSearching" class="flex items-center gap-2 overflow-hidden max-w-[1000px] mx-auto">
             <div class="basis-full flex items-center gap-2 rounded-full border border-gray-500 px-4 py-2 text-md">
                 <SearchIcon class="w-4 h-4"/>
                 <input type="text" placeholder="Search" class="outline-none text-sm selection:bg-gray-300"/>
