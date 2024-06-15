@@ -1,5 +1,6 @@
 package com.electronics_store.model.dto.request.promotion;
 
+import com.electronics_store.validator.ImageConstraint;
 import jakarta.validation.constraints.NotBlank;
 
 import jakarta.validation.constraints.NotNull;
@@ -22,5 +23,6 @@ public class CreateAndUpdatePromotionByAdminDTO {
     private Double maxDiscount;
 
     @NotNull(message = "Image is required")
+    @ImageConstraint
     private MultipartFile image;
 }

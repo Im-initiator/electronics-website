@@ -45,7 +45,7 @@ public class PostServiceImpl implements PostService {
     public ApiResponse<?> getPageByAdmin(Map<String, String> params) {
         try {
             State state = State.convert(Integer.parseInt(params.getOrDefault("state", "1")));
-            if (!RequestUtils.isPageExists(params) && !params.containsKey("title")) {
+            if (!RequestUtils.isPageExists(params) && !params.containsKey("title")&& params.containsKey("state")) {
                 List<PostEntity> result = postRepository.findAllByState(state);
                 return new ApiResponse<>(result, "Get all post successfully!");
             }

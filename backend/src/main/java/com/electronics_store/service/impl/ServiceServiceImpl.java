@@ -46,7 +46,7 @@ public class ServiceServiceImpl implements ServiceService {
     public ApiResponse<?> getPageByAdmin(Map<String, String> params) {
         try {
             State state = State.convert(Integer.parseInt(params.getOrDefault("state", "1")));
-            if (!params.containsKey("page") && !params.containsKey("limit") && !params.containsKey("name")) {
+            if (!params.containsKey("page") && !params.containsKey("limit") && !params.containsKey("name")&& params.containsKey("state")) {
                 List<ServiceEntity> list = serviceRepository.findByState(state);
                 List<GetServiceByAdminDTO> result =
                         list.stream().map(serviceMapper::toGetServiceByAdminDTO).toList();

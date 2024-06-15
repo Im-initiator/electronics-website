@@ -19,9 +19,4 @@ public class UpdateAccountByAdmin {
     @Min(value = 0, message = "State must be greater than 0")
     @Max(value = 1, message = "State must be less than 1")
     private Integer status;
-
-    @JsonProperty("role_ids")
-    @NotNull
-    @Size(min = 1, message = "Role id must be at least 1")
-    private Set<Long> roleIds;
 }

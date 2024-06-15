@@ -1,5 +1,6 @@
 package com.electronics_store.model.dto.request.shop;
 
+import com.electronics_store.validator.ImageConstraint;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,7 @@ public class UpdateShopByAdminDTO {
 
     private String address;
 
+    @ImageConstraint
     private MultipartFile image;
 
     @Length(max = 300, message = "Map must be at most 300 characters")

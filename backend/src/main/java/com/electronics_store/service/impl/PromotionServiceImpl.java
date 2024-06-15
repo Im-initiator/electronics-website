@@ -42,7 +42,7 @@ public class PromotionServiceImpl implements PromotionService {
 
         try {
             State state = State.convert(Integer.parseInt(params.getOrDefault("state", "1")));
-            if(!RequestUtils.isPageExists(params)&&!params.containsKey("name")) {
+            if(!RequestUtils.isPageExists(params)&&!params.containsKey("name")&& params.containsKey("state")) {
                 List<PromotionEntity> result = promotionRepository.findAllByState(state);
                 return new ApiResponse<>(result, "Get all promotion successfully!");
             }

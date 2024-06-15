@@ -111,7 +111,7 @@ public class SocialServiceImpl implements SocialService {
     public ApiResponse<?> findAllByAdmin(Map<String, String> params) {
         try {
             State state = State.convert(Integer.parseInt(params.getOrDefault("state", "1")));
-            if (!params.containsKey("limit") && !params.containsKey("page") && !params.containsKey("name")) {
+            if (!params.containsKey("limit") && !params.containsKey("page") && !params.containsKey("name")&& params.containsKey("state")) {
                 List<SocialEntity> list = socialRepository.findAllByState(state);
                 List<GetSocialByAdminDTO> result =
                         list.stream().map(socialMapper::toGetSocialByAdminDTO).toList();

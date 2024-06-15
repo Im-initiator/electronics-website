@@ -20,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoryEntity extends BaseEntity {
-    @Column(nullable = false, columnDefinition = "NVARCHAR(100)")
+    @Column(nullable = false, columnDefinition = "NVARCHAR(100)", unique = true)
     private String name;
 
     @Column(nullable = false)
@@ -29,6 +29,9 @@ public class CategoryEntity extends BaseEntity {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductTypeEntity> productTypes = new HashSet<>();
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
     private Set<TechnicalSpecificationEntity> technicalSpecifications = new HashSet<>();
+
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
+    private Set<BrandEntity> brands = new HashSet<>();
 }

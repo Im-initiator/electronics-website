@@ -2,9 +2,9 @@ package com.electronics_store.controller;
 
 import java.util.Enumeration;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,8 +14,9 @@ import com.electronics_store.exception.ErrorSystem;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "error", description = "Error Handling don't care")
+@Hidden
 @RestController
-public class CustomErrorController implements ErrorController {
+public class ErrorController implements org.springframework.boot.web.servlet.error.ErrorController {
     @RequestMapping("/error")
     public void handleError(HttpServletRequest request) throws Throwable {
 

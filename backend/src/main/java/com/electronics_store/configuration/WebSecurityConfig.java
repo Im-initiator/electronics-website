@@ -139,7 +139,7 @@ public class WebSecurityConfig {
                         .requestMatchers(EMPLOYEE)
                         .hasAnyAuthority("EMPLOYEE")
                         .requestMatchers(MANAGER)
-                        .hasAnyAuthority("MANAGER")
+                        .hasAnyAuthority("MANAGER","ADMIN")
                         .requestMatchers(ADMIN)
                         .hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/shop/**")

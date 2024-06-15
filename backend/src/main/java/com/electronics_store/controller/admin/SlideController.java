@@ -54,7 +54,7 @@ public class SlideController {
         return ResponseEntity.ok().body(slideService.updateSlideByAdmin(id, State.ACTIVE, State.DELETE));
     }
 
-    @PutMapping("/{id}/restore")
+    @PatchMapping("/{id}/restore")
     public ResponseEntity<?> restore(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(slideService.updateSlideByAdmin(id, State.DELETE, State.ACTIVE));
     }

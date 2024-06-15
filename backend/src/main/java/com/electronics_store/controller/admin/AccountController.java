@@ -46,7 +46,7 @@ public class AccountController {
         return ResponseEntity.ok(accountService.getAccountByAdmin(id));
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> updateUser(
             @PathVariable Long id, @Valid @RequestBody UpdateAccountByAdmin user) {
         return ResponseEntity.ok().body(accountService.updateAccountByAdmin(id, user));
@@ -57,7 +57,7 @@ public class AccountController {
         return ResponseEntity.ok().body(accountService.updateAccountByAdmin(id, State.DELETE));
     }
 
-    @PutMapping("{id}/restore")
+    @PatchMapping("{id}/restore")
     public ResponseEntity<ApiResponse<?>> restoreUser(@PathVariable Long id) {
         return ResponseEntity.ok().body(accountService.updateAccountByAdmin(id, State.ACTIVE));
     }

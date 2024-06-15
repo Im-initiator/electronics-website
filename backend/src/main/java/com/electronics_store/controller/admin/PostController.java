@@ -53,7 +53,7 @@ public class PostController {
         return ResponseEntity.ok().body(postService.updateByAdmin(id, State.ACTIVE, State.DELETE));
     }
 
-    @PutMapping("/{id}/restore")
+    @PatchMapping("/{id}/restore")
     public ResponseEntity<?> restore(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(postService.updateByAdmin(id, State.DELETE, State.ACTIVE));
     }

@@ -2,8 +2,17 @@ package com.electronics_store.service.impl;
 
 import java.util.*;
 
+import com.electronics_store.mapper.EmployeeMapper;
+import com.electronics_store.model.dto.request.employee.CreateEmployeeByAdminDTO;
+import com.electronics_store.model.entity.*;
+import com.electronics_store.repository.*;
+import com.electronics_store.utils.*;
 import jakarta.transaction.Transactional;
 
+import jakarta.validation.Constraint;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,17 +35,8 @@ import com.electronics_store.model.dto.request.account.*;
 import com.electronics_store.model.dto.response.LoginResponseDTO;
 import com.electronics_store.model.dto.response.account.GetAccountByAdminByAdminDTO;
 import com.electronics_store.model.dto.response.account.UpdateAccountByUserDTO;
-import com.electronics_store.model.entity.AccountEntity;
-import com.electronics_store.model.entity.RoleEntity;
-import com.electronics_store.model.entity.TokenEntity;
-import com.electronics_store.repository.AccountRepository;
-import com.electronics_store.repository.RoleRepository;
-import com.electronics_store.repository.TokenRepository;
 import com.electronics_store.service.AccountService;
 import com.electronics_store.service.jwt.JwtService;
-import com.electronics_store.utils.FileUtils;
-import com.electronics_store.utils.ResponseUtils;
-import com.electronics_store.utils.SecurityUtils;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -52,6 +52,11 @@ public class AccountServiceImpl implements AccountService {
     RoleRepository roleRepository;
     TokenRepository tokenRepository;
     AccountMapper accountMapper;
+    EmployeeMapper employeeMapper;
+    EmployeeRepository employeeRepository;
+    BranchRepository branchRepository;
+    //Lấy một Validator từ factory mặc định
+    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     static String URL_USER_DEFAULT = "\\files_upload\\images\\userDefault.png";
 
@@ -67,10 +72,14 @@ public class AccountServiceImpl implements AccountService {
         if (accountRepository.isExitingUserName(createAccountByUserRequestDTO.getUserName())) {
             throw new CustomRuntimeException(ErrorSystem.USER_NAME_IS_EXISTS);
         }
+        if (accountRepository.isExitingEmail(createAccountByUserRequestDTO.getEmail())) {
+            throw new CustomRuntimeException(ErrorSystem.EMAIL_IS_EXISTS);
+        }
         RoleEntity role = roleRepository
                 .findByName(RoleType.USER.name())
                 .orElseThrow(() -> new NullPointerException("Role User not found"));
         AccountEntity accountEntity = DataMapper.toEntity(createAccountByUserRequestDTO, AccountEntity.class);
+        accountEntity.setId(null);
         accountEntity.setPassword(passwordEncoder.encode(accountEntity.getPassword()));
         accountEntity.setRoles(Set.of(role));
         accountEntity.setThumbnail(URL_USER_DEFAULT);
@@ -99,17 +108,50 @@ public class AccountServiceImpl implements AccountService {
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public ApiResponse<?> createAccountByAdmin(CreateAccountByAdminRequestDTO account) {
         if (accountRepository.isExitingUserName(account.getUserName())) {
             throw new CustomRuntimeException(ErrorSystem.USER_NAME_IS_EXISTS);
         }
-        AccountEntity accountEntity = DataMapper.toEntity(account, AccountEntity.class);
+        if (accountRepository.isExitingEmail(account.getEmail())) {
+            throw new CustomRuntimeException(ErrorSystem.EMAIL_IS_EXISTS);
+        }
+        if (account.getRoleIds().isEmpty()) {
+            throw new CustomRuntimeException(ErrorSystem.ROLE_NULL);
+        }
+
+        AccountEntity accountEntity = accountMapper.toEntity(account);
         accountEntity.setPassword(passwordEncoder.encode(accountEntity.getPassword()));
         Set<RoleEntity> roles = roleRepository.findByIdIn(account.getRoleIds());
         accountEntity.setRoles(roles);
         accountEntity.setStatus(UserStatus.ACTIVE);
         accountEntity.setThumbnail(URL_USER_DEFAULT);
-        accountRepository.save(accountEntity);
+        String[] names = {
+                RoleType.EMPLOYEE.name(),
+                RoleType.MANAGER.name()
+        };
+        accountEntity = accountRepository.save(accountEntity);
+        if(roleRepository.isIdContainingName(account.getRoleIds(), Arrays.asList(names))) {
+            if (account.getEmployee() != null && !ObjectUtils.isObjectEmpty(account.getEmployee())) {
+                //validate thông tin nhân viên, phát hiện xem có ConstraintViolation nào được  tạo ra hay không
+                //Nếu có lỗi valid trong nhân viên thì Set sẽ chứa ConstraintViolation chứa thông tin lỗi
+                Set<ConstraintViolation<CreateEmployeeByAdminDTO>> employeeViolations = validator.validate(account.getEmployee());
+                if (!employeeViolations.isEmpty()) {
+                    //Lấy ra đối tượng đầu tiên trong Set và ném ra lỗi
+                    throw new CustomRuntimeException(employeeViolations.iterator().next().getMessage(), HttpStatus.BAD_REQUEST);
+                }
+                EmployeeEntity employee = employeeMapper.toEntity(account.getEmployee());
+                BranchEntity branch = branchRepository.findByIdAndState(account.getEmployee().getBranchId(), State.ACTIVE)
+                        .orElseThrow(() -> new CustomRuntimeException("Branch not found",HttpStatus.NOT_FOUND));
+                employee.setBranch(branch);
+                employee.setAccount(accountEntity);
+                employeeRepository.save(employee);
+                return new ApiResponse<>("create user success");
+            }else {
+                throw new CustomRuntimeException("Employee not found",HttpStatus.NOT_FOUND);
+            }
+        }
+
         return new ApiResponse<>("create user success");
     }
 
@@ -117,31 +159,34 @@ public class AccountServiceImpl implements AccountService {
     @Transactional(rollbackOn = Exception.class)
     public ApiResponse<UpdateAccountByUserDTO> updateUserInformationByUser(
             UpdateAccountByUserRequestDTO updateAccountByUserRequestDTO) {
+        if (accountRepository.isExitingUserName(updateAccountByUserRequestDTO.getUserName())) {
+            throw new CustomRuntimeException(ErrorSystem.USER_NAME_IS_EXISTS);
+        }
+        if (accountRepository.isExitingEmail(updateAccountByUserRequestDTO.getEmail())) {
+            throw new CustomRuntimeException(ErrorSystem.EMAIL_IS_EXISTS);
+        }
         updateAccountByUserRequestDTO.setId(SecurityUtils.getPrincipalId());
         String filename = updateAccountByUserRequestDTO.getImage().getOriginalFilename();
         String image = null;
         AccountEntity account = accountRepository
                 .findById(updateAccountByUserRequestDTO.getId())
                 .orElseThrow(() -> new CustomRuntimeException(ErrorSystem.USER_NOT_FOUND));
+        String oldImage = account.getThumbnail();
         try {
-            if ((account != null)) {
-                DataMapper.map(updateAccountByUserRequestDTO, account);
-                if (!FileUtils.isImageExisted(filename)) {
-                    image = FileUtils.saveImage(updateAccountByUserRequestDTO.getImage());
-                    String oldImage = account.getThumbnail();
-                    if (oldImage != null && !oldImage.equals(URL_USER_DEFAULT)) {
-                        if (!FileUtils.deleteImage(oldImage)) {
-                            FileUtils.deleteImage(image);
-                            throw new CustomRuntimeException(ErrorSystem.INTERNAL_SERVER_ERROR);
-                        }
-                    }
-                    account.setThumbnail(image);
-                }
-                account = accountRepository.save(account);
-                UpdateAccountByUserDTO accountResponse = DataMapper.toDTO(account, UpdateAccountByUserDTO.class);
-                return new ApiResponse<>(accountResponse, "Update account successful");
+            DataMapper.map(updateAccountByUserRequestDTO, account);
+            if (!FileUtils.isImageExisted(filename)) {
+                image = FileUtils.saveImage(updateAccountByUserRequestDTO.getImage());
+                account.setThumbnail(image);
             }
-            return new ApiResponse<>(ErrorSystem.INTERNAL_SERVER_ERROR);
+            account = accountRepository.save(account);
+            if (image!= null && oldImage != null && !oldImage.equals(URL_USER_DEFAULT)&&FileUtils.checkPath(oldImage)) {
+                if (!FileUtils.deleteImage(oldImage)) {
+                    FileUtils.deleteImage(image);
+                    throw new CustomRuntimeException(ErrorSystem.INTERNAL_SERVER_ERROR);
+                }
+            }
+            UpdateAccountByUserDTO accountResponse = DataMapper.toDTO(account, UpdateAccountByUserDTO.class);
+            return new ApiResponse<>(accountResponse, "Update account successful");
         } catch (Exception e) {
             if (image != null) {
                 if (FileUtils.checkPath(image)) {
@@ -156,25 +201,17 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public ApiResponse<?> findAllAccountActiveByAdmin(Map<String, String> request) {
         try {
-            int page = Integer.parseInt(request.get("page")) - 1;
-            int limit = Integer.parseInt(request.get("limit"));
-            State state = State.convert(Integer.parseInt(request.get("state")));
-            UserStatus status = UserStatus.convert(Integer.parseInt(request.get("user_status")));
-            Pageable pageable = PageRequest.of(page, limit);
+            State state = State.convert(Integer.parseInt(request.getOrDefault("state","1")));
+            UserStatus status = UserStatus.convert(Integer.parseInt(request.getOrDefault("user_status","1")));
+            Pageable pageable = RequestUtils.getPageable(request);
             Page<AccountEntity> pageAccount = null;
-            String name;
-            try {
-                name = (String) request.get("name");
-            } catch (NullPointerException e) {
-                name = null;
-            }
-            if (name == null) {
+            if (!request.containsKey("name")) {
                 pageAccount = accountRepository.findAllAccountActiveOrderByCreatedDate(state, status, pageable);
             } else {
+                String name = request.get("name");
                 pageAccount = accountRepository.findAllAccountActiveAndNameContainOrderByCreatedDate(
                         state, status, name, pageable);
             }
-
             Map<String, Object> result = ResponseUtils.getPageResponse(
                     pageable, pageAccount, accountMapper, a -> accountMapper.toGetAccountByAdminDTO((AccountEntity) a));
             return new ApiResponse<>(result, "Get all account success");
@@ -190,14 +227,6 @@ public class AccountServiceImpl implements AccountService {
         AccountEntity accountEntity = accountRepository
                 .findById(id)
                 .orElseThrow(() -> new CustomRuntimeException(ErrorSystem.USER_NOT_FOUND));
-        if (account.getRoleIds().isEmpty()) {
-            throw new CustomRuntimeException(ErrorSystem.ROLE_NULL);
-        }
-        Set<RoleEntity> ids = roleRepository.findByIdIn(account.getRoleIds());
-        if (ids.isEmpty()) {
-            throw new CustomRuntimeException("Role is not correct", HttpStatus.BAD_REQUEST);
-        }
-        accountEntity.setRoles(ids);
         accountEntity.setStatus(UserStatus.convert(account.getStatus()));
         accountRepository.save(accountEntity);
         return new ApiResponse<>("Update account success");
@@ -237,6 +266,7 @@ public class AccountServiceImpl implements AccountService {
         AccountEntity accountEntity = accountRepository
                 .findAccountById(id)
                 .orElseThrow(() -> new CustomRuntimeException(ErrorSystem.USER_NOT_FOUND));
+        EmployeeEntity employee = accountEntity.getEmployee();
         return new ApiResponse<>(accountMapper.toGetAccountByAdminDTO(accountEntity), "Get account success");
     }
 }

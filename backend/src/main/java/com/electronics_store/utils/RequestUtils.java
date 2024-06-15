@@ -8,8 +8,8 @@ import org.springframework.data.domain.Pageable;
 public class RequestUtils {
 
     public static Pageable getPageable(Map<String, String> params) {
-        int page = Integer.parseInt(params.get("page")) - 1;
-        int limit = Integer.parseInt(params.get("limit"));
+        int page = Integer.parseInt(params.getOrDefault("page","1")) - 1;
+        int limit = Integer.parseInt(params.getOrDefault("limit","10"));
         return PageRequest.of(page, limit);
     }
 

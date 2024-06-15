@@ -43,7 +43,7 @@ public class AccountEntity extends BaseEntity {
     @Convert(converter = UserStatusConverter.class)
     private UserStatus status;
 
-    @OneToOne(cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    @OneToOne(mappedBy = "account",cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private EmployeeEntity employee;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.REMOVE)

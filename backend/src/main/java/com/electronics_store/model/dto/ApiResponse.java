@@ -28,14 +28,14 @@ public class ApiResponse<T> {
     public ApiResponse(T object, String message) {
         this.data = object;
         this.success = true;
-        this.code = 100;
+        this.code = 200;
         this.message = message;
     }
 
     public ApiResponse(String message) {
         this.data = null;
         this.success = true;
-        this.code = 100;
+        this.code = 200;
         this.message = message;
     }
 }

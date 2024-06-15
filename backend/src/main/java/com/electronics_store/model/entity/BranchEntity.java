@@ -43,7 +43,7 @@ public class BranchEntity extends BaseEntity {
     @OneToMany(mappedBy = "branch", cascade = CascadeType.PERSIST)
     Set<ProductEntity> products = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id", nullable = false)
     private ShopEntity shop;
 }

@@ -53,7 +53,7 @@ public class SocialController {
         return ResponseEntity.ok().body(socialService.updateSocialByAdmin(id, State.DELETE));
     }
 
-    @PutMapping("/{id}/restore")
+    @PatchMapping("/{id}/restore")
     public ResponseEntity<?> restore(@PathVariable Long id) {
         return ResponseEntity.ok().body(socialService.updateSocialByAdmin(id, State.ACTIVE));
     }

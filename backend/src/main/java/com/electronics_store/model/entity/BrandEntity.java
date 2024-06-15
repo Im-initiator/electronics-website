@@ -3,10 +3,7 @@ package com.electronics_store.model.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,12 +20,20 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BrandEntity extends BaseEntity {
-    @Column(columnDefinition = "NVARCHAR(100)")
+    @Column(columnDefinition = "NVARCHAR(100)",nullable = false,unique = true)
     private String name;
 
-    @Column
+    @Column(nullable = false)
     private String logo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private CategoryEntity category;
 
     @OneToMany
     private Set<ProductEntity> products = new HashSet<>();
+
+
+
+
 }

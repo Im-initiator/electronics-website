@@ -2,6 +2,8 @@ package com.electronics_store.model.dto.request.account;
 
 import java.util.Set;
 
+import com.electronics_store.model.dto.request.employee.CreateEmployeeByAdminDTO;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -31,4 +33,9 @@ public class CreateAccountByAdminRequestDTO {
 
     @JsonProperty("role_ids")
     private Set<Long> roleIds;
+
+    @JsonProperty("info_employee")
+    private CreateEmployeeByAdminDTO employee = null;
+
+
 }

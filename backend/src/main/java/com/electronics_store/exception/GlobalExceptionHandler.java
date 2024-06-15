@@ -1,5 +1,6 @@
 package com.electronics_store.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -18,6 +20,10 @@ import com.electronics_store.model.dto.ApiResponse;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -142,6 +148,29 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleUserNamePasswordIsCorrect(AuthenticationException ex) {
         return ResponseEntity.status(ErrorSystem.INCORRECT_ACCOUNT.getStatus())
                 .body(new ApiResponse<>(ErrorSystem.INCORRECT_ACCOUNT));
+    }
+
+    // xử lý lỗi khi custom validate trường dữ liệu
+    // (Khi class được đánh dấu là @Validated nêu filed nào lỗi thì nó ném ra ngoại lệ này
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> handleCustomValidatorException(ConstraintViolationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ApiResponse.builder().code(400).success(false).message(ex.getConstraintViolations().iterator().next().getMessage()).build()
+        );
+    }
+
+    // xử lý lỗi khi custom validate trường dữ liệu (Nếu chỉ valid trên một method của class không được đaánh dấu
+    //@Validated thì nó ném ra ngoại lệ này)
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<?> handleMethodValidationException(HandlerMethodValidationException ex) {
+        MethodArgumentNotValidException validationException = (MethodArgumentNotValidException) ex.getCause();
+        BindingResult bindingResult = validationException.getBindingResult();
+        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+        Map<String, String> errors = new HashMap<>();
+        for (FieldError error : fieldErrors) {
+            errors.put(error.getField(), error.getDefaultMessage());
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
     // xử lý lỗi các truong hợp  còn lại

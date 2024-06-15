@@ -47,7 +47,7 @@ public class SlideServiceImpl implements SlideService {
     public ApiResponse<?> getAllSlidesByAdmin(Map<String, String> params) {
         try {
             State state = State.convert(Integer.parseInt(params.getOrDefault("state", "1")));
-            if (!params.containsKey("page") && !params.containsKey("limit") && !params.containsKey("name")) {
+            if (!params.containsKey("page") && !params.containsKey("limit") && !params.containsKey("name")&& params.containsKey("state")) {
                 List<SlideEntity> list = slideRepository.findByState(state);
                 List<GetSlideByAdminDTO> result =
                         list.stream().map(slideMapper::toGetSlideByAdminDTO).toList();
