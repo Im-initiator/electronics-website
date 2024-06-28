@@ -118,7 +118,7 @@ public class WebSecurityConfig {
             CorsConfiguration corsConfig = new CorsConfiguration();
             corsConfig.setAllowCredentials(true); // cho phép chia sẻ thông tin xác thực
             // thiết lập danh sách các nguồn không bị  chặn cors
-            corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:8081"));
+            corsConfig.setAllowedOrigins(Collections.singletonList("*"));
             corsConfig.setAllowedMethods(Collections.singletonList("*")); // các method HTTP cho phép
             corsConfig.setAllowedHeaders(Collections.singletonList("*")); // các header cho phép
             corsConfig.setMaxAge(3600L); // thời gian cho phép trình duyệt không cần phải gửi yêu cầu duyệt cors
