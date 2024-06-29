@@ -36,8 +36,8 @@ public class BrandController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> getOne(@PathVariable("id") @NotNull Long id) {
-        return ResponseEntity.ok().body(brandService.getOneByManager(id));
+    public ResponseEntity<ApiResponse<?>> getOne(@PathVariable("id") Long id,@RequestParam(value = "state",defaultValue = "1") int state ) {
+        return ResponseEntity.ok().body(brandService.getOneByManager(id,state));
     }
 
 

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface BrandRepository extends JpaRepository<BrandEntity, Long>{
@@ -25,5 +26,11 @@ public interface BrandRepository extends JpaRepository<BrandEntity, Long>{
 
     @Query("SELECT CASE WHEN COUNT(b) > 0 THEN TRUE ELSE FALSE END FROM BrandEntity b WHERE b.name = :name")
     boolean isExistsBrandName(String name);
+
+    @Query("SELECT b FROM BrandEntity b WHERE b.state =: state")
+    List<BrandEntity> findByState(State state);
+
+    @Query("SELECT b FROM BrandEntity b JOIN FETCH b.category WHERE b.id = :id AND b.state = :state")
+    Optional<BrandEntity> getOneByIdAndStateIncludeCategory(Long id,State state);
 
 }

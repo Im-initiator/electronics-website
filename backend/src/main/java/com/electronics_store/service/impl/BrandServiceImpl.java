@@ -6,6 +6,7 @@ import com.electronics_store.exception.ErrorSystem;
 import com.electronics_store.mapper.BrandMapper;
 import com.electronics_store.model.dto.ApiResponse;
 import com.electronics_store.model.dto.request.brand.CreateUpdateBrandDTO;
+import com.electronics_store.model.dto.response.brand.GetBrandByAdmin;
 import com.electronics_store.model.entity.BrandEntity;
 import com.electronics_store.model.entity.CategoryEntity;
 import com.electronics_store.repository.BrandRepository;
@@ -19,6 +20,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -114,8 +117,14 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public ApiResponse<?> getPageByManger(Map<String, String> params) {
         try {
-            Pageable pageable = RequestUtils.getPageable(params);
             State state = State.convert(Integer.parseInt(params.getOrDefault("state", "1")));
+            if (!params.containsKey("name")&&!params.containsKey("page")&&!params.containsKey("limit") && params.containsKey("state")){
+                List<BrandEntity> list = brandRepository.findByState(state);
+                List<GetBrandByAdmin> result = list.stream().map(brandMapper::toGetBrandByAdmin).toList();
+                return new ApiResponse<>(result,"Get brand successful");
+            }
+
+            Pageable pageable = RequestUtils.getPageable(params);
             Page<BrandEntity> page;
             if (params.containsKey("name")) {
                 String name = params.get("name");
@@ -134,10 +143,11 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public ApiResponse<?> getOneByManager(Long id) {
-        BrandEntity brandEntity = brandRepository.findById(id)
+    public ApiResponse<?> getOneByManager(Long id,int state) {
+        State s = State.convert(state);
+        BrandEntity brandEntity = brandRepository.getOneByIdAndStateIncludeCategory(id,s)
                 .orElseThrow(()-> new CustomRuntimeException("Brand not found", HttpStatus.NOT_FOUND));
-        return new ApiResponse<>(brandMapper.toGetBrandByAdmin(brandEntity),"Get brand successfully!");
+        return new ApiResponse<>(brandMapper.toGetOneBrandByAdminDto(brandEntity),"Get brand successfully!");
     }
 
 

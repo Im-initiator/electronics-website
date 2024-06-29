@@ -17,5 +17,5 @@ public interface BrandService {
 
     ApiResponse<?> getPageByManger(Map<String, String> params);
 
-    ApiResponse<?> getOneByManager(Long id);
+    ApiResponse<?> getOneByManager(Long id,int state);
 }

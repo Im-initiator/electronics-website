@@ -27,6 +27,7 @@ public enum ErrorSystem {
     METHOD_NOT_SUPPORT(405, HttpStatus.METHOD_NOT_ALLOWED, "This method is not supported"),
     PAGE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "Page not found"),
     TOKEN_NOT_FOUND(404, HttpStatus.NOT_FOUND, "Token not found"),
+    ARGUMENT_IS_CORRECT(400,HttpStatus.BAD_REQUEST,"Request param is correct"),
     SAVE_IMAGE_FAILED(500, HttpStatus.INTERNAL_SERVER_ERROR, "Save image failed");
 
     private final int code;

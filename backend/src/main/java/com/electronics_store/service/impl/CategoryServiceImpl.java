@@ -100,8 +100,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ApiResponse<?> getOneByManager(Long id) {
-        CategoryEntity categoryEntity = categoryRepository.findByIdAndState(id, State.ACTIVE).orElseThrow(
+    public ApiResponse<?> getOneByManager(Long id,int state) {
+        State s = State.convert(state);
+        CategoryEntity categoryEntity = categoryRepository.findByIdAndState(id,s).orElseThrow(
                 () -> new CustomRuntimeException("Category not found", HttpStatus.NOT_FOUND)
         );
         return new ApiResponse<>(categoryMapper.toGetCategoryByAdminDTO(categoryEntity),"Category found successfully");

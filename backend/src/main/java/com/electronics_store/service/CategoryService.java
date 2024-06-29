@@ -14,7 +14,7 @@ public interface CategoryService {
 
     ApiResponse<?> updateByManager(Long id, State oldState, State newState);
 
-    ApiResponse<?> getOneByManager(Long id);
+    ApiResponse<?> getOneByManager(Long id,int state);
 
     ApiResponse<?> getPageByManger(Map<String, String> params);
 }

@@ -28,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 public class AccountController {
 
     private final AccountService accountService;
-    private final TokenService tokenService;
 
     @Operation(summary = "Get page", description = "params: page,limit,state,user_status,name(allow null)")
     @GetMapping

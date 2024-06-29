@@ -20,7 +20,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductTypeEntity extends BaseEntity {
-    @Column(nullable = false, columnDefinition = "NVARCHAR(100)")
+    @Column(nullable = false, columnDefinition = "NVARCHAR(100)", unique = true)
     private String name;
 
     @ManyToOne
